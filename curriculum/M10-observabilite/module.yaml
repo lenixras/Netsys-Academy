@@ -1,0 +1,14 @@
+id: M10
+title: "Observabilité"
+wave: 3
+prereqs: ['M3', 'M6']
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+validation:
+  quiz_min_score: 70
+  lab_required: true

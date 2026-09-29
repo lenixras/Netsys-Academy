@@ -1,0 +1,10 @@
+{
+ "srv": [
+  "echo aW5jbHVkZSAvZXRjL2xkYXAvc2NoZW1hL2NvcmUuc2NoZW1hCmluY2x1ZGUgL2V0Yy9sZGFwL3NjaGVtYS9jb3NpbmUuc2NoZW1hCmluY2x1ZGUgL2V0Yy9sZGFwL3NjaGVtYS9pbmV0b3JncGVyc29uLnNjaGVtYQpwaWRmaWxlIC90bXAvc2xhcGQucGlkCm1vZHVsZXBhdGggL3Vzci9saWIvbGRhcAptb2R1bGVsb2FkIGJhY2tfbWRiCmRhdGFiYXNlIG1kYgptYXhzaXplIDEwNzM3NDE4MjQKc3VmZml4ICJkYz1sYWIyMyxkYz1sb2NhbCIKcm9vdGRuICJjbj1hZG1pbixkYz1sYWIyMyxkYz1sb2NhbCIKcm9vdHB3IHNlY3JldApkaXJlY3RvcnkgL3Zhci9saWIvbGRhcAppbmRleCBvYmplY3RDbGFzcyBlcQo= | base64 -d > /etc/ldap/slapd.conf",
+  "slapd -u openldap -g openldap -f /etc/ldap/slapd.conf -h ldap://10.23.0.10:389/"
+ ],
+ "cli": [
+  "echo ZG46IGRjPWxhYjIzLGRjPWxvY2FsCm9iamVjdENsYXNzOiBkb21haW4KZGM6IGxhYjIzCgpkbjogb3U9UGVvcGxlLGRjPWxhYjIzLGRjPWxvY2FsCm9iamVjdENsYXNzOiBvcmdhbml6YXRpb25hbFVuaXQKb3U6IFBlb3BsZQoKZG46IHVpZD1lbGV2MSxvdT1QZW9wbGUsZGM9bGFiMjMsZGM9bG9jYWwKb2JqZWN0Q2xhc3M6IGluZXRPcmdQZXJzb24KdWlkOiBlbGV2MQpjbjogRWxldmUgUHJlbWllcgpzbjogUHJlbWllcgp1c2VyUGFzc3dvcmQ6IGVsZXYxcGFzcwo= | base64 -d > /root/base.ldif",
+  "ldapadd -H ldap://10.23.0.10 -x -D cn=admin,dc=lab23,dc=local -w secret -f /root/base.ldif"
+ ]
+}

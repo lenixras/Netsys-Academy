@@ -1,0 +1,11 @@
+{
+  "h1": [
+    "mkdir -p /root/proj/bin /root/proj/logs",
+    "printf '#!/bin/bash\\necho \"bonjour depuis hello.sh\"\\n' > /root/proj/bin/hello.sh",
+    "chmod +x /root/proj/bin/hello.sh",
+    "printf '2026-01-10 08:01:22 INFO Service démarré\\n2026-01-10 08:03:45 ERROR Disque plein\\n2026-01-10 08:04:10 INFO Sauvegarde OK\\n2026-01-10 08:05:00 ERROR Timeout BDD\\n2026-01-10 08:06:30 ERROR Panne réseau\\n' > /root/proj/logs/access.log",
+    "chmod 640 /root/proj/logs/access.log",
+    "grep -c ERROR /root/proj/logs/access.log > /root/proj/logs/erreur.txt",
+    "nohup sleep 4321 > /dev/null 2>&1 &"
+  ]
+}

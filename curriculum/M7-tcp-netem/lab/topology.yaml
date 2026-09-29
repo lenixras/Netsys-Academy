@@ -1,0 +1,22 @@
+name: m7-netem
+mgmt:
+  network: clab-m7
+  ipv4-subnet: 10.198.7.0/24
+topology:
+  nodes:
+    h1:
+      kind: linux
+      image: netsys/labnode:1
+    r1:
+      kind: linux
+      image: netsys/labnode:1
+    r2:
+      kind: linux
+      image: netsys/labnode:1
+    h2:
+      kind: linux
+      image: netsys/labnode:1
+  links:
+    - endpoints: ["h1:eth1", "r1:eth1"]   # LAN 10.10.10.0/24
+    - endpoints: ["r1:eth2", "r2:eth1"]   # WAN 10.99.0.0/30 (le lien à impairment)
+    - endpoints: ["r2:eth2", "h2:eth1"]   # LAN 10.10.20.0/24

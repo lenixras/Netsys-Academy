@@ -1,0 +1,82 @@
+questions:
+- q: "Ansible est agentless : cela signifie qu'il pilote les cibles via :"
+  choices:
+    - "SSH (et WinRM/Python présent sur la cible)"
+    - "un agent installé et démarré sur chaque nœud"
+    - "un SNMP trap"
+    - "une base de données partagée"
+  answer: 0
+  points: 1
+  expl: "Ansible est agentless : il se connecte en SSH (WinRM pour Windows) et exécute du Python déjà présent sur la cible, sans démon à installer sur chaque nœud."
+- q: "Dans un fichier d'inventaire, que déclare la ligne « tgt ansible_host=10.15.0.2 » ?"
+  choices:
+    - "un hôte nommé tgt joignable à cette IP"
+    - "un groupe d'hôtes"
+    - "un module personnalisé"
+    - "une variable de playbook"
+  answer: 0
+  points: 1
+  expl: "Cette ligne déclare un hôte nommé tgt dont l'adresse réelle est donnée par ansible_host ; ce n'est ni un groupe ni un module."
+- q: "Quel module builtin crée un utilisateur Linux ?"
+  choices:
+    - "ansible.builtin.user"
+    - "ansible.builtin.file"
+    - "ansible.builtin.lineinfile"
+    - "ansible.builtin.shell"
+  answer: 0
+  points: 1
+  expl: "Le module ansible.builtin.user crée et gère un utilisateur Linux ; file, lineinfile et shell répondent à d'autres besoins."
+- q: "L'idempotence d'un playbook signifie :"
+  choices:
+    - "le second passage ne change rien si l'état est déjà conforme"
+    - "le playbook ne tourne qu'une seule fois par jour"
+    - "chaque tâche est relancée à l'identique"
+    - "Ansible efface les logs après chaque run"
+  answer: 0
+  points: 1
+  expl: "Idempotent veut dire qu'un second passage ne modifie rien quand l'état cible est déjà atteint : Ansible rapporte ok sans changement dupliqué."
+- q: "« ansible all -m ping » vérifie :"
+  choices:
+    - "la connectivité SSH et la présence de Python sur les cibles"
+    - "un ICMP uniquement"
+    - "la latence réseau"
+    - "la configuration NTP"
+  answer: 0
+  points: 1
+  expl: "ansible all -m ping teste la liaison Ansible réelle : connexion SSH réussie et Python opérationnel sur chaque cible, pas un simple ICMP."
+- q: "Pour copier un fichier de l'hôte Ansible vers les cibles on utilise :"
+  choices:
+    - "ansible.builtin.copy"
+    - "ansible.builtin.fetch"
+    - "ansible.builtin.sync"
+    - "rsync --daemon"
+  answer: 0
+  points: 1
+  expl: "Le module copy envoie un fichier du contrôleur vers les cibles ; fetch fait l'inverse, de la cible vers le contrôleur."
+- q: "host_key_checking = False dans ansible.cfg évite :"
+  choices:
+    - "l'invite de confiance pour les clés d'hôte SSH inconnues"
+    - "le chiffrement des mots de passe"
+    - "la collecte de faits"
+    - "le mode become"
+  answer: 0
+  points: 1
+  expl: "host_key_checking=False désactive la vérification de la clé d'hôte SSH, donc plus d'invite de confiance au premier contact, au prix d'un risque d'interception (MITM)."
+- q: "Un playbook YAML au format correct commence typiquement par :"
+  choices:
+    - "une liste de plays (- hosts: …)"
+    - "un dictionnaire de variables"
+    - "un import python"
+    - "un module en JSON"
+  answer: 0
+  points: 1
+  expl: "Un playbook est une liste de plays, chacun commençant par un élément hosts ; ce n'est pas un dictionnaire de variables ni du code Python."
+- q: "La différence entre ansible (ad-hoc) et ansible-playbook :"
+  choices:
+    - "ad-hoc = une commande rapide ; playbook = scénario YAML multi-tâches"
+    - "playbook ne marche que sur localhost"
+    - "ad-hoc exige un agent"
+    - "aucune, c'est le même outil"
+  answer: 0
+  points: 1
+  expl: "ansible (ad-hoc) lance une seule tâche rapide sur les cibles ; ansible-playbook exécute un scénario YAML ordonnant plusieurs tâches."

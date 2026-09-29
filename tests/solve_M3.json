@@ -1,0 +1,12 @@
+{
+  "admin1": [
+    "useradd -u 1500 -m -s /bin/bash devops",
+    "groupadd -f staff",
+    "usermod -aG staff devops",
+    "ip link set eth1 up",
+    "ip addr add 10.198.11.50/24 dev eth1",
+    "sysctl -w net.ipv4.ip_forward=1",
+    "nohup python3 -m http.server 8080 > /dev/null 2>&1 &",
+    "echo \"$(date '+%F %T') deploiement app v1 OK\" >> /var/log/deploy.log"
+  ]
+}

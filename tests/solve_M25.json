@@ -1,0 +1,9 @@
+{
+ "tgt": [
+  "ln -sf /usr/bin/prometheus-node-exporter /usr/local/bin/node_exporter 2>/dev/null; node_exporter --web.listen-address=10.25.0.20:9100 >/root/node_exporter.log 2>&1 &"
+ ],
+ "mon": [
+  "echo Z2xvYmFsOgogIHNjcmFwZV9pbnRlcnZhbDogNXMKc2NyYXBlX2NvbmZpZ3M6CiAgLSBqb2JfbmFtZTogdGd0CiAgICBzdGF0aWNfY29uZmlnczoKICAgICAgLSB0YXJnZXRzOiBbJzEwLjI1LjAuMjA6OTEwMCddCg== | base64 -d > /root/prometheus.yml",
+  "prometheus --config.file=/root/prometheus.yml --storage.tsdb.path=/var/lib/prometheus >/root/prometheus.log 2>&1 &"
+ ]
+}

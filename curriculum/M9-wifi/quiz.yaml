@@ -1,0 +1,82 @@
+questions:
+- q: "WPA3-Personal s'appuie de base sur :"
+  choices:
+    - "SAE (Simultaneous Authentication of Equals)"
+    - "WEP"
+    - "TKIP"
+    - "RADIUS seul"
+  answer: 0
+  points: 1
+  expl: "WPA3-Personal remplace le simple PSK par SAE, un échange de type Dragonfly qui résiste aux attaques hors ligne et fournit le secret parfait de transmission. WEP et TKIP sont cassés, et RADIUS relève de 802.1X (entreprise)."
+- q: "Le roaming d'un client entre deux bornes dépend surtout de :"
+  choices:
+    - "la force du signal perçue et des aides 802.11k/v/r"
+    - "du bail DHCP"
+    - "du NAT de la box"
+    - "du MTU Ethernet"
+  answer: 0
+  points: 1
+  expl: "Le client change de borne en fonction du signal perçu, et les aides 802.11k (mesures de voisins), 802.11v (transition BSS) et 802.11r (ré-authentification rapide) rendent la bascule fluide. Le bail DHCP, le NAT ou le MTU n'y changent rien."
+- q: "La bande 2,4 GHz se caractérise par :"
+  choices:
+    - "une bonne portée mais peu de canaux non chevauchants (1, 6, 11)"
+    - "le débit maximal du Wi-Fi"
+    - "l'absence d'interférences"
+    - "des centaines de canaux disponibles"
+  answer: 0
+  points: 1
+  expl: "La bande 2,4 GHz porte loin mais n'offre que trois canaux larges sans chevauchement (1, 6 et 11), d'où les interférences. Les hauts débits et les centaines de canaux sont le propre des bandes 5 et 6 GHz."
+- q: "L'accès au support en 802.11 est fondé sur :"
+  choices:
+    - "CSMA/CA avec acquittement de chaque trame"
+    - "CSMA/CD avec détection de collision"
+    - "TDMA à créneaux fixes"
+    - "le token passing entre clients"
+  answer: 0
+  points: 1
+  expl: "Le Wi-Fi ne peut pas détecter les collisions comme un bus Ethernet (CSMA/CD) ; il les évite par CSMA/CA et confirme chaque trame reçue par un acquittement, sinon elle est réémise."
+- q: "Les canaux DFS en 5 GHz obligent l'AP à :"
+  choices:
+    - "écouter le canal (radar) et le quitter si un radar est détecté"
+    - "doubler la puissance d'émission"
+    - "n'autoriser que WPA2"
+    - "masquer le SSID"
+  answer: 0
+  points: 1
+  expl: "Les canaux DFS sont partagés avec des radars : avant d'émettre l'AP effectue une écoute (CAC) et doit libérer immédiatement le canal s'il détecte un signal radar."
+- q: "Une sécurité Wi-Fi d'entreprise par identité utilisateur repose sur :"
+  choices:
+    - "802.1X avec un serveur RADIUS"
+    - "une PSK unique partagée à tout le personnel"
+    - "le filtrage des adresses MAC uniquement"
+    - "le WEP renforcé"
+  answer: 0
+  points: 1
+  expl: "802.1X authentifie chaque utilisateur via un serveur RADIUS, l'AP servant d'authenticator. Une PSK partagée ou le filtrage MAC n'apportent ni identité ni secret individuel."
+- q: "Les balises beacon servent à :"
+  choices:
+    - "annoncer périodiquement le SSID et les capacités de l'AP"
+    - "authentifier le client auprès du DNS"
+    - "attribuer les adresses IP"
+    - "synchroniser l'horloge NTP"
+  answer: 0
+  points: 1
+  expl: "L'AP émet périodiquement des beacons qui annoncent le réseau (SSID), l'horodatage de synchronisation et ses capacités, ce qui permet aux clients de le découvrir."
+- q: "Pour un déploiement voix sur Wi-Fi, la couverture cible usuelle est :"
+  choices:
+    - "environ -67 dBm sur les zones desservies"
+    - "-95 dBm partout"
+    - "le RSSI maximal de chaque AP"
+    - "aucun seuil, le client décide seul"
+  answer: 0
+  points: 1
+  expl: "La voix tolère mal les pertes et la gigue ; le seuil de conception usuel est d'environ -67 dBm sur les zones desservies, bien plus fiable qu'un -95 dBm à peine décodable ou un RSSI maximal local."
+- q: "Un AP émettant à puissance maximale dans un plan d'implantation :"
+  choices:
+    - "crée une asymétrie : des clients lointains l'entendent mais ne lui répondent pas"
+    - "améliore le roaming de tous les clients"
+    - "réduit la contention"
+    - "est la bonne pratique recommandée"
+  answer: 0
+  points: 1
+  expl: "L'AP entend mieux qu'il n'est entendu : un client lointain, limité par sa propre puissance, reçoit les beacons mais n'arrive pas à répondre, ce qui crée une asymétrie de couverture et dégrade le roaming."

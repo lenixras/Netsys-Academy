@@ -1,0 +1,46 @@
+questions:
+- q: "Combien d'hôtes utilisables dans 192.168.1.0/27 ?"
+  choices:
+    - "30"
+    - "32"
+    - "62"
+    - "14"
+  answer: 0
+  points: 1
+  expl: "/27 laisse 5 bits pour la partie hôte : 2^5 = 32 adresses, dont il faut retirer l'adresse réseau et l'adresse de broadcast, soit 30 hôtes utilisables."
+- q: "Le broadcast de 10.0.4.128/25 est :"
+  choices:
+    - "10.0.4.255"
+    - "10.0.4.127"
+    - "10.0.5.255"
+    - "10.0.4.192"
+  answer: 0
+  points: 1
+  expl: "/25 découpe le /24 en deux blocs de 128 adresses ; celui de 10.0.4.128 va de 10.0.4.128 à 10.0.4.255, et la dernière adresse du bloc est toujours le broadcast."
+- q: "Un /30 convient typiquement à :"
+  choices:
+    - "un lien point-à-point"
+    - "un LAN de 100 postes"
+    - "un VLAN utilisateurs"
+    - "un pool DHCP"
+  answer: 0
+  points: 1
+  expl: "/30 ne laisse que 2 adresses utilisables (4 - réseau - broadcast) : exactement les deux extrémités d'un lien point-à-point, sans gaspiller d'adresses."
+- q: "Le VLSM consiste à :"
+  choices:
+    - "allouer des sous-réseaux de tailles variées selon les besoins"
+    - "masquer les adresses privées"
+    - "vérifier les voisins"
+    - "passer tout en /24"
+  answer: 0
+  points: 1
+  expl: "Le VLSM (variable-length subnet mask) module la taille du préfixe selon le nombre d'hôtes requis (un /30 pour une interconnexion, un /24 pour un LAN), afin d'économiser l'espace d'adressage."
+- q: "Dans un LAN IPv6, le préfixe par défaut par segment est :"
+  choices:
+    - "/64"
+    - "/128"
+    - "/32"
+    - "/48"
+  answer: 0
+  points: 1
+  expl: "IPv6 attribue /64 par lien : les 64 bits d'hôtes sont nécessaires à l'autoconfiguration SLAAC (adresses dérivées de la MAC ou aléatoires) ; /128 désigne une interface unique."

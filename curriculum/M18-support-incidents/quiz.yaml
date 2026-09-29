@@ -1,0 +1,31 @@
+questions:
+- q: "Un utilisateur dit « le site est mort ». Quelle est la première action d'un support méthodique ?"
+  choices: ["Redémarrer le serveur physique", "Reproduire le symptôme et identifier quel maillon échoue (nom, réseau, port, application)", "Créer un nouvel enregistrement DNS", "Relancer le DHCP"]
+  answer: 1
+  points: 1
+  expl: "On ne répare rien sans savoir quoi casse : reproduire puis tester maillon par maillon évite les correctifs qui aggravent la panne."
+- q: "Après une migration, dig répond mais la page ne charge pas. Que suspecter en priorité ?"
+  choices: ["Le serveur web n'a jamais existé", "Le DNS est entièrement HS", "Un enregistrement A qui pointe encore l'ancienne IP", "Le MTU est trop petit"]
+  answer: 2
+  points: 1
+  expl: "Une zone obsolète répond bien... avec une IP morte. dig réussit, la connexion échoue : c'est la signature d'une A record non mise à jour."
+- q: "Chaque résolution de nom depuis un poste prend 5 secondes puis échoue. Cause la plus probable ?"
+  choices: ["resolv.conf pointant un DNS éteint", "Le port 53 bloqué par le pare-feu du serveur DNS", "Une zone sans enregistrement NS", "Un pool DHCP épuisé"]
+  answer: 0
+  points: 1
+  expl: "Un nameserver injoignable provoque des timeouts de 5 s par tentative. C'est typiquement une config client restée sur l'ancienne infrastructure."
+- q: "À quoi sert le serial dans un fichier de zone ?"
+  choices: ["À dater la création du nom de domaine", "À identifier la version de la zone pour les secondaires et caches", "À chiffrer les transferts de zone", "À limiter le nombre d'enregistrements"]
+  answer: 1
+  points: 1
+  expl: "Le serial est le numéro de version de la zone : un secondaire (ou un cache) ne remplace sa copie que si le serial est plus récent."
+- q: "Que valide réellement « dnsmasq --test --conf-file=... » ?"
+  choices: ["Que les clients obtiennent des bails", "Que le réseau 10.18.0.0/24 existe", "Que dnsmasq répond au ping", "La syntaxe de la config, pas son adéquation au réseau"]
+  answer: 3
+  points: 1
+  expl: "--test ne fait que parser le fichier : un dhcp-range sur le mauvais sous-réseau passe le test sans servir personne."
+- q: "Le check de clôture d'un ticket service doit être..."
+  choices: ["Un redémarrage complet", "La sortie du log système", "Une preuve de bout en bout depuis le poste de l'utilisateur (ex. curl http://nom)", "Le score des checks internes du serveur"]
+  answer: 2
+  points: 1
+  expl: "Ce qui compte pour l'utilisateur c'est le chemin complet : nom résolu, route suivie, service répondant — vérifiés depuis son propre poste."

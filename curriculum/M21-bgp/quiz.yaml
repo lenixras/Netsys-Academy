@@ -1,0 +1,55 @@
+questions:
+- q: 'BGP sert principalement à :'
+  choices:
+  - Router dans une salle serveur
+  - Échanger des préfixes entre systèmes autonomes (organisations)
+  - Remplacer le DNS
+  - Filtrer les broadcasts
+  answer: 1
+  points: 1
+  expl: 'BGP = le protocole d''inter-domaine : il relie les AS, chacun contrôlant ses annonces.'
+- q: Que signifie un pair bloqué en état 'Active' ?
+  choices:
+  - Session établie
+  - La connexion TCP vers le pair n'aboutit pas (IP/voisinage/ACL)
+  - Trop de préfixes
+  - Le routeur redémarre
+  answer: 1
+  points: 1
+  expl: 'Active = on retente sans succès : pas de route vers le pair, mauvais numéro d''AS ou port 179 filtré.'
+- q: 'La commande ''network 10.21.1.0/24'' annonce le préfixe seulement si :'
+  choices:
+  - Le préfixe existe déjà dans la table de routage interne
+  - bgpd est redémarré
+  - Le voisin est en iBGP
+  - On a configuré OSPF
+  answer: 0
+  points: 1
+  expl: 'BGP ne publie que ce que le routeur route déjà : ici le LAN connecté d''eth2 satisfait la condition.'
+- q: Quel attribut BGP liste les AS traversés par une annonce ?
+  choices:
+  - MED
+  - AS_PATH
+  - ORIGIN
+  - NEXT_HOP
+  answer: 1
+  points: 1
+  expl: AS_PATH est la colonne vertébrale de la boucle-anti et du choix de chemin.
+- q: 'Sur le port TCP, BGP écoute sur :'
+  choices:
+  - '179'
+  - '520'
+  - '89'
+  - '161'
+  answer: 0
+  points: 1
+  expl: La session BGP = TCP/179, d'où l'importance de la reachabilité IP avant tout le reste.
+- q: 'Un AS privé (utilisable sans numéro officiel) parmi ceux-ci :'
+  choices:
+  - '64512'
+  - '1'
+  - '100'
+  - '8000'
+  answer: 0
+  points: 1
+  expl: Les plages privées 64512-65534 et 4201024000+ sont réservées ; 64512 est notre AS de lab.

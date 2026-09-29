@@ -1,0 +1,31 @@
+checks:
+- id: dhcp_srv_up
+  node: srv
+  cmd: ss -uln | grep -c ":67"
+  expect: ^[1-9]$
+  points: 1
+  hint: 'Le serveur DHCP ne tourne pas sur srv : ''dnsmasq --conf-file=/root/dnsmasq.conf'' (le fichier existe, port=0 = DHCP seul). Verifier ''ss -uln | grep :67'' (etape 1).'
+- id: relay_running
+  node: rtr
+  cmd: pgrep -x dhcrelay
+  points: 2
+  hint: 'Le routeur ne relais pas : ''dhcrelay 10.26.1.10'' — il ecoute sur toutes les interfaces (dont eth1 cote clients) et forward vers le serveur 10.26.1.10 (etape 2).'
+- id: lease_obtained
+  node: cli
+  cmd: ip -4 addr show dev eth1 | grep -Ec "inet 10\.26\.2\.1[0-4][0-9]/24"
+  expect: ^[1-9]$
+  points: 2
+  hint: 'La machine cliente n''a pas de bail dans le pool : lancer ''dhclient eth1'' sur cli. Sans relais actif (check precedent) le DISCOVER reste confine au LAN (etape 3).'
+- id: gw_option
+  node: cli
+  cmd: grep -c 'routers 10[.]26[.]2[.]1' /var/lib/dhcp/dhclient.leases
+  expect: ^[1-9]$
+  points: 2
+  hint: 'L''option 3 (routers) du bail doit etre 10.26.2.1 : lire ''grep routers /var/lib/dhcp/dhclient.leases'' (le dernier bail est en haut). Si rien : ''dhclient eth1'' n''a pas abouti ou l''option 3
+    manque dans /root/dnsmasq.conf (etape 1-3).'
+- id: ping_gw_from_cli
+  node: cli
+  cmd: ping -c2 -W2 10.26.2.1
+  expect: 0% packet loss
+  points: 3
+  hint: 'Test final : le client doit joindre sa passerelle 10.26.2.1 (l''autre face du routeur qui a fait le relais). Si ca echoue : ''ip route get 10.26.2.1'' et bail correct sur eth1 (etape 3).'

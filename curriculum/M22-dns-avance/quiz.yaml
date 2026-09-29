@@ -1,0 +1,55 @@
+questions:
+- q: 'Un serveur ''master'' d''une zone :'
+  choices:
+  - Ne fait que relayer
+  - Est la source de vérité où l'on édite les enregistrements
+  - Reçoit par AXFR
+  - Est obligatoire chez tous les domaines
+  answer: 1
+  points: 1
+  expl: Le master porte l'original ; les secondaires s'alignent par transfert.
+- q: 'Le transfert AXFR est :'
+  choices:
+  - La copie complète d'une zone vers un secondaire
+  - La compression des réponses
+  - Le chiffrement DNS
+  - Un type de cache
+  answer: 0
+  points: 1
+  expl: AXFR = téléchargement intégral de la zone — donc on l'autorise au compte-gouttes (allow-transfer).
+- q: On ajoute un enregistrement sur le master mais le secondary ne change pas. Cause n°1 ?
+  choices:
+  - Le TTL est trop bas
+  - Le serial SOA n'a pas été incrémenté
+  - Le firewall UDP
+  - Le DNSSEC manque
+  answer: 1
+  points: 1
+  expl: 'Le secondary compare les serials : sans incrément, il estime sa copie à jour.'
+- q: 'La zone inverse de 10.22.0.0/24 s''écrit :'
+  choices:
+  - 0.22.10.in-addr.arpa
+  - 22.0.10.in-addr.arpa
+  - arpa.10.22.0
+  - reverse.10.22.0
+  answer: 0
+  points: 1
+  expl: L'IPv4 se lit à l'envers par octets, suffixée .in-addr.arpa.
+- q: 'allow-recursion { 10.0.0.0/8; } sur un serveur récursif :'
+  choices:
+  - Autorise uniquement ces clients à interroger le serveur en récursif
+  - Filtre les noms
+  - Empêche le cache
+  - Interdit le transfert
+  answer: 0
+  points: 1
+  expl: 'Un open resolver (tout le monde) devient une arme de réflexion : on limite la récursion aux clients légitimes.'
+- q: 'Sur un client, ''nameserver'' dans /etc/resolv.conf désigne :'
+  choices:
+  - L'autorité de zone
+  - Le serveur auquel on pose les questions (souvent récursif)
+  - Le serveur DHCP
+  - Le passe-relle
+  answer: 1
+  points: 1
+  expl: Le client interroge son resolviseur ; celui-ci trouve l'autorité, pas le client.

@@ -1,0 +1,25 @@
+id: M24
+title: 'Mail : un serveur SMTP + IMAP fonctionnel'
+wave: 4
+prereqs:
+- M4
+- M23
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: mx
+    cmd: ip addr add 10.24.0.10/24 dev eth1 && ip link set eth1 up && hostname mx.lab24.local
+  - node: cli
+    cmd: ip addr add 10.24.0.30/24 dev eth1 && ip link set eth1 up
+  - node: mx
+    cmd: id alice >/dev/null 2>&1 || useradd -m alice; echo 'alice:secret' | chpasswd; mkdir -p /var/mail; touch /var/mail/alice; chown alice:mail /var/mail/alice; chmod 600 /var/mail/alice
+  - node: mx
+    cmd: 'echo ''Objectif : postfix (SMTP 25) + dovecot (IMAP 143) joignables depuis cli.'' > /root/CONSIGNE.txt'
+validation:
+  quiz_min_score: 70
+  lab_required: true

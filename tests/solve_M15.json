@@ -1,0 +1,14 @@
+{
+  "tgt": [
+    "mkdir -p /root/.ssh && chmod 700 /root/.ssh",
+    "grep -q AAAAC3NzaC1lZDI1NTE5 /root/.ssh/authorized_keys 2>/dev/null || echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEbQc9I1HLLhRh/EViR6APSoPJh+w9EvIdjFfgOYMzOC lab-m15-jetable' >> /root/.ssh/authorized_keys",
+    "chmod 600 /root/.ssh/authorized_keys"
+  ],
+  "ctl": [
+    "mkdir -p /root/.ssh && chmod 700 /root/.ssh && rm -f /root/.ssh/id_ed25519 /root/.ssh/id_ed25519.pub && echo LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNCRzBIUFNOUnl5NFVZZnhGWWtlZ0QwcUR5WWZzUFJMeUhZeFg0RG1ETXpnZ0FBQUppeVF6YURza00yCmd3QUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQkcwSFBTTlJ5eTRVWWZ4RllrZWdEMHFEeVlmc1BSTHlIWXhYNERtRE16Z2cKQUFBRUJRZVVQK21jUUUvaGdTMStsOGVaRG9POVR6SXJBUjI0UFZ2RmFKSk5NemZrYlFjOUkxSExMaFJoL0VWaVI2QVBTbwpQSmgrdzlFdklkakZmZ09ZTXpPQ0FBQUFFM05tWkVCRVJWTkxWRTlRTFRVd1IwaE9VemdCQWc9PQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K | base64 -d > /root/.ssh/id_ed25519 && chmod 600 /root/.ssh/id_ed25519",
+    "echo W21hbmFnZWRdCnRndCBhbnNpYmxlX2hvc3Q9MTAuMTUuMC4yCg== | base64 -d > /root/inventory.ini",
+    "echo LS0tCi0gbmFtZTogQmFzZSBzeXN0ZW1lIGNpYmxlCiAgaG9zdHM6IGFsbAogIHJlbW90ZV91c2VyOiByb290CiAgdGFza3M6CiAgICAtIG5hbWU6IENyZWVyIGxlIHNlcnZpY2UgYWNjb3VudCBzdmNhcHAKICAgICAgYW5zaWJsZS5idWlsdGluLnVzZXI6CiAgICAgICAgbmFtZTogc3ZjYXBwCiAgICAgICAgc3lzdGVtOiB0cnVlCiAgICAgICAgc2hlbGw6IC91c3Ivc2Jpbi9ub2xvZ2luCiAgICAgICAgY3JlYXRlX2hvbWU6IGZhbHNlCgogICAgLSBuYW1lOiBFY3JpcmUgL2V0Yy9tb3RkCiAgICAgIGFuc2libGUuYnVpbHRpbi5jb3B5OgogICAgICAgIGRlc3Q6IC9ldGMvbW90ZAogICAgICAgIGNvbnRlbnQ6ICJNYW5hZ2VkIGJ5IEFuc2libGVcbiIKICAgICAgICBtb2RlOiAiMDY0NCIK | base64 -d > /root/site.yml",
+    "echo W2RlZmF1bHRzXQppbnZlbnRvcnkgPSAvcm9vdC9pbnZlbnRvcnkuaW5pCmhvc3Rfa2V5X2NoZWNraW5nID0gRmFsc2UK | base64 -d > /root/ansible.cfg",
+    "cd /root && ansible-playbook -i inventory.ini site.yml"
+  ]
+}

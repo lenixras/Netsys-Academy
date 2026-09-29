@@ -1,0 +1,91 @@
+questions:
+- q: "Dans un chemin, que représente ~ ?"
+  choices:
+    - "La racine du filesystem"
+    - "Le répertoire personnel de l'utilisateur courant"
+    - "Toujours /tmp"
+    - "Le répertoire /etc"
+  answer: 1
+  points: 1
+  expl: "~ désigne le répertoire personnel (home) de l'utilisateur courant, par exemple /home/alice ; la racine du filesystem est /."
+- q: "Quelle est la différence entre un chemin absolu et un chemin relatif ?"
+  choices:
+    - "Aucune, ce sont des synonymes"
+    - "Un chemin relatif commence toujours par /"
+    - "Un chemin absolu commence par / ; un relatif dépend du répertoire courant"
+    - "Un chemin absolu ne peut contenir que des chiffres"
+  answer: 2
+  points: 1
+  expl: "Un chemin absolu part toujours de la racine / ; un chemin relatif est interprété à partir du répertoire courant, visible avec pwd."
+- q: "chmod 640 fichier donne :"
+  choices:
+    - "rwx pour le propriétaire, rwx pour le groupe"
+    - "lecture seule pour tout le monde"
+    - "rw pour le propriétaire, rwx pour le groupe"
+    - "rw pour le propriétaire, r pour le groupe, rien pour les autres"
+  answer: 3
+  points: 1
+  expl: "Chaque chiffre additionne les droits (r=4, w=2, x=1) : 6 = rw pour le propriétaire, 4 = r pour le groupe, 0 = aucun droit pour les autres."
+- q: "Que fait la commande `mkdir -p a/b/c` ?"
+  choices:
+    - "Elle crée a, b et c imbriqués, sans erreur s'ils existent déjà"
+    - "Elle supprime a/b/c s'il existe"
+    - "Elle crée uniquement c"
+    - "Elle échoue toujours si a existe"
+  answer: 0
+  points: 1
+  expl: "L'option -p crée tous les répertoires parents manquants (a, puis b, puis c) et ne génère pas d'erreur s'ils existent déjà."
+- q: "Quelle est la différence entre `>` et `>>` dans une redirection ?"
+  choices:
+    - "`>` écrit sur stderr, `>>` sur stdout"
+    - "`>` écrase (tronque) le fichier, `>>` ajoute à la fin"
+    - "Les deux sont identiques"
+    - "`>>` ne fonctionne qu'avec grep"
+  answer: 1
+  points: 1
+  expl: "`>` tronque le fichier avant d'écrire, donc l'ancien contenu est perdu ; `>>` ajoute la sortie à la fin du fichier existant."
+- q: "Le pipe `cmd1 | cmd2` transmet :"
+  choices:
+    - "le fichier de cmd1 à cmd2"
+    - "le code de retour de cmd1 à cmd2"
+    - "la sortie standard de cmd1 vers l'entrée standard de cmd2"
+    - "les variables d'environnement de cmd1"
+  answer: 2
+  points: 1
+  expl: "Le pipe branche la sortie standard (stdout) de cmd1 sur l'entrée standard (stdin) de cmd2 ; ni les fichiers, ni les codes de retour, ni les variables ne transitent par là."
+- q: "Pour lancer une commande en arrière-plan du shell :"
+  choices:
+    - "on précède la commande de bg"
+    - "on utilise kill -0"
+    - "on ajoute l'option --daemon"
+    - "on ajoute & à la fin de la ligne"
+  answer: 3
+  points: 1
+  expl: "Un & en fin de ligne demande au shell d'exécuter la commande en arrière-plan ; bg ne fait que remettre en arrière-plan une tâche déjà suspendue."
+- q: "Que signifie la première ligne `#!/bin/bash` d'un script ?"
+  choices:
+    - "Un commentaire ignoré"
+    - "Le shebang : l'interpréteur qui doit exécuter le script"
+    - "Le chemin de sauvegarde du script"
+    - "La version minimale de bash"
+  answer: 1
+  points: 1
+  expl: "La ligne #! (shebang) indique au noyau quel interpréteur lancer pour exécuter le fichier ; ici c'est /bin/bash."
+- q: "Pour compter les lignes contenant ERROR dans un fichier :"
+  choices:
+    - "grep -c ERROR fichier"
+    - "find ERROR fichier"
+    - "wc -l ERROR fichier"
+    - "ls -l | ERROR"
+  answer: 0
+  points: 1
+  expl: "grep -c compte les lignes qui correspondent au motif ; wc -l compterait toutes les lignes du fichier, sans filtrer sur ERROR."
+- q: "Que liste la commande `dpkg -l` ?"
+  choices:
+    - "Les fichiers du répertoire courant"
+    - "Les processus en cours"
+    - "Les paquets Debian installés (et leur état)"
+    - "Les utilisateurs du système"
+  answer: 2
+  points: 1
+  expl: "dpkg est le gestionnaire de paquets Debian : dpkg -l liste les paquets connus du système avec leur version et leur état (installé, résidu...)."

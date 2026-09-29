@@ -1,0 +1,9 @@
+#!/bin/bash
+# containerlab dans un conteneur privilégié (pas de sudo dispo sur cet hôte).
+# dockerd (WSL2) partage le filesystem de la distro : les paths montés à l'identique
+# fonctionnent comme binds pour les conteneurs lab créés via le socket hôte.
+exec docker run --rm --privileged --pid host --network host \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /home:/home \
+  -v "$HOME/.local/bin/containerlab:/usr/local/bin/containerlab:ro" \
+  netsys/labnode:1 containerlab "$@"

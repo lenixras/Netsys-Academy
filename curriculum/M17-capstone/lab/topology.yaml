@@ -1,0 +1,35 @@
+name: m17-capstone
+mgmt:
+  network: clab-m17
+  ipv4-subnet: 10.198.20.0/24
+topology:
+  nodes:
+    core1:
+      kind: linux
+      image: netsys/labnode:2
+    core2:
+      kind: linux
+      image: netsys/labnode:2
+    srv1:
+      kind: linux
+      image: netsys/labnode:2
+    acc1:
+      kind: linux
+      image: netsys/labnode:2
+    pc1:
+      kind: linux
+      image: netsys/labnode:2
+    ext:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    # poste utilisateur sur le switch d'accès (VLAN 100, accès non taggé)
+    - endpoints: ["pc1:eth1", "acc1:eth1"]
+    # dorsale acc1 -> cœur (port in Vlan100, non taggé vers core1)
+    - endpoints: ["acc1:eth2", "core1:eth1"]
+    # interco coeur -> coeur2 (préfixe /30)
+    - endpoints: ["core1:eth2", "core2:eth1"]
+    # coeur2 -> serveur (VLAN serveurs /24)
+    - endpoints: ["core2:eth2", "srv1:eth1"]
+    # sortie « Internet » du cœur (NAT côté core1, eth3)
+    - endpoints: ["core1:eth3", "ext:eth1"]

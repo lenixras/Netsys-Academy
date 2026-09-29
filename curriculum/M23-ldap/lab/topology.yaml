@@ -1,0 +1,16 @@
+name: m23-ldap
+mgmt:
+  network: clab-m23
+  ipv4-subnet: 10.198.31.0/24
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netsys/labnode:3
+    cli:
+      kind: linux
+      image: netsys/labnode:3
+  links:
+  - endpoints:
+    - srv:eth1
+    - cli:eth1

@@ -1,0 +1,11 @@
+{
+  "h1": [
+    "mkdir -p /root/resp",
+    "tshark -r /root/cap_tcp.pcap -Y tcp.flags.syn==1 -Y tcp.flags.ack==0 | wc -l > /root/resp/syn.txt",
+    "tshark -r /root/cap_tcp.pcap -Y tcp.flags.syn==1 -Y tcp.flags.ack==1 | wc -l > /root/resp/synack.txt",
+    "tshark -r /root/cap_tcp.pcap -Tfields -etcp.flags | paste -sd, > /root/resp/seq.txt",
+    "tshark -r /root/cap_arp.pcap -c1 -Tfields -eframe.len > /root/resp/arp_len.txt",
+    "tshark -r /root/cap_dns.pcap -Y dns.flags.response==0 -Tfields -edns.qry.name > /root/resp/dns_q.txt",
+    "tshark -r /root/cap_dns.pcap -Y dns.flags.response==0 -Tfields -edns.id > /root/resp/dns_id.txt"
+  ]
+}

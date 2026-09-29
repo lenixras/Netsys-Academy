@@ -1,0 +1,14 @@
+id: M12
+title: "Dureté système & bonnes pratiques"
+wave: 3
+prereqs: [M3, M11]
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+validation:
+  quiz_min_score: 70
+  lab_required: true

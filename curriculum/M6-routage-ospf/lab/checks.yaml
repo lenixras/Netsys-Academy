@@ -1,0 +1,37 @@
+checks:
+- id: ospf_nb_r1_full2
+  node: r1
+  cmd: vtysh -c "show ip ospf neighbor" | grep -c Full
+  expect: "^2$"
+  points: 2
+  hint: "r1 doit avoir 2 adjacences Full (vers r2 et r3). Sous vtysh, verifie interface par interface : 10.0.12.1/29 sur eth1, 10.0.13.1/29 sur eth2, avec ip ospf area 0 ET ip ospf network point-to-point sur ces deux liens (sans point-to-point, l'election DR bloque l'adjacence), plus ospf router-id 2.2.2.2 sous router ospf (etape 2)."
+- id: ospf_nb_r3_full2
+  node: r3
+  cmd: vtysh -c "show ip ospf neighbor" | grep -c Full
+  expect: "^2$"
+  points: 1
+  hint: "r3 doit voir r1 et r2 en Full : 10.0.13.3/29 sur eth2 (lien r1-r3) et 10.0.23.3/29 sur eth1 (lien r2-r3), chacune avec ip ospf network point-to-point puis ip ospf area 0, et ospf router-id 4.4.4.4 sous router ospf (etape 3). Les adresses doivent correspondre au plan : un mismatch d'IP ou de masque empeche l'adjacence."
+- id: route_h2_net_in_r1
+  node: r1
+  cmd: vtysh -c "show ip route ospf" | grep -c "10.10.20.0/24"
+  expect: "^1$"
+  points: 2
+  hint: "Le LAN de h2 (10.10.20.0/24) n'est pas appris par r1 : r3 doit annoncer son interface eth3 (ip address 10.10.20.1/24 + ip ospf area 0 sous cette interface, etape 3) ET les adjacences OSPF doivent etre Full sur les deux sauts (etapes 2-3). Controle avec vtysh -c show ip route ospf."
+- id: loopback_r3_in_r1
+  node: r1
+  cmd: vtysh -c "show ip route ospf" | grep -c "4.4.4.4/32"
+  expect: "^1$"
+  points: 1
+  hint: "La loopback de r3 doit etre dans la table OSPF de r1 : sur r3, sous vtysh, interface lo avec ip address 4.4.4.4/32 et ip ospf area 0 (etape 3). Si les voisins ne sont pas Full, les routes ne s'echangent pas non plus (etape 4)."
+- id: area0_backbone
+  node: r1
+  cmd: 'vtysh -c "show ip ospf" | grep -c "Area ID: 0.0.0.0"'
+  expect: "^1$"
+  points: 1
+  hint: "La zone 0 (backbone) n'est pas declaree sur r1. Chez FRR il n'y a pas de network ... area : la zone se met PAR INTERFACE avec ip ospf area 0 (en mode config-interface) sur eth1, eth2, eth3 et lo, apres avoir lance router ospf (etape 2). Relance show ip ospf dans vtysh pour confirmer."
+- id: ping_h1_h2
+  node: h1
+  cmd: ping -c2 -W2 10.10.20.10
+  expect: "0% packet loss"
+  points: 3
+  hint: "h1 doit joindre 10.10.20.10 (h2) a travers le triangle OSPF : verifie d'abord les hotes (h1 : 10.10.10.10/24 avec route par defaut via 10.10.10.1 ; h2 : 10.10.20.10/24 via 10.10.20.1, etape 1), puis que r1 et r3 annoncent bien leurs LAN eth3 en zone 0 et que toutes les adjacences sont Full (etapes 2 a 4)."

@@ -1,0 +1,40 @@
+checks:
+- id: fw_ip_forward
+  node: fw
+  cmd: cat /proc/sys/net/ipv4/ip_forward
+  expect: "^1"
+  points: 1
+  hint: "Le transit IP n'est pas active sur fw. Sans routage autorise, aucun paquet ne traverse le pare-feu : lance sysctl -w net.ipv4.ip_forward=1 sur fw (etape 1) et verifie que eth1 (10.10.110.1/24) et eth2 (10.10.120.1/24) sont bien up et adresses."
+- id: lan_ping_wan_nat
+  node: lan
+  cmd: ping -c2 -W2 10.10.120.20
+  expect: 0% packet loss
+  points: 2
+  hint: "Le ping lan -> wan echoue. Il faut une route par defaut sur lan (ip route replace default via 10.10.110.1, etape 1) ET la regle NAT masquerade sur fw pour le reseau 10.10.110.0/24 sortant par eth2 (etape 2). wan n'a volontairement aucune route vers le LAN : c'est le masquerade qui fait revenir les reponses."
+- id: wan_icmp_to_lan_blocked
+  node: wan
+  cmd: '! ping -c1 -W2 10.10.110.10'
+  points: 2
+  hint: "wan arrive encore a pinger lan (10.10.110.10) : l'ICMP entrant n'est pas bloque. Ajoute dans la chaine forward de /root/nft.rules la regle iifname eth2 ip protocol icmp drop (etape 4), puis recharge avec nft -f /root/nft.rules. La regle ct state established,related accept doit preceder ce drop."
+- id: portfwd_wan8080_to_lan80
+  node: wan
+  cmd: "curl -s -m 5 -o /dev/null -w %{http_code} http://10.10.120.1:8080"
+  expect: ^200
+  points: 2
+  hint: "Le curl vers 10.10.120.1:8080 ne renvoie pas 200. Trois choses verifiees : le serveur web tourne sur lan (nohup python3 -m http.server 80 > /dev/null 2>&1 &, etape 3), la regle DNAT existe sur fw (chain prerouting : iifname eth2 meta l4proto tcp tcp dport 8080 dnat to 10.10.110.10:80) et la chaine forward autorise le tcp dport 80 venant de eth2."
+- id: nft_masquerade_rule
+  node: fw
+  cmd: nft list ruleset
+  expect: masquerad
+  points: 1
+  hint: "Aucune regle masquerade dans le jeu de regles actif (nft list ruleset). Cree la table ip nat et la chaine postrouting de type nat (etape 2) puis ajoute : nft add rule ip nat postrouting ip saddr 10.10.110.0/24 oifname eth2 masquerade. Attention a un eventuel flush ruleset qui a efface la regle."
+- id: nft_icmp_drop_rule
+  node: fw
+  cmd: "nft list ruleset | grep -Eq 'icmp[^|]*drop|ip protocol 1'"
+  points: 1
+  hint: "Le jeu actif ne contient aucune regle de drop ICMP. Ecris la politique etape 4 dans /root/nft.rules (chaine forward : iifname eth2 ip protocol icmp drop) puis charge-la sur fw avec nft -f /root/nft.rules ; nft list ruleset doit montrer la regle."
+- id: ruleset_saved
+  node: fw
+  cmd: grep -q masquerad /root/nft.conf.set
+  points: 1
+  hint: "Le fichier /root/nft.conf.set n'existe pas ou ne contient pas la regle masquerade. Une fois le jeu actif correct, archive-le avec nft list ruleset > /root/nft.conf.set sur fw (etape 6) : c'est l'equivalent du show running-config, le seul artefact a versionner."

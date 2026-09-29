@@ -1,0 +1,91 @@
+questions:
+- q: "Dans sshd_config, PermitRootLogin no interdit :"
+  choices:
+    - "la connexion SSH directe en tant que root"
+    - "toute connexion SSH"
+    - "le changement de mot de passe"
+    - "l'écoute sur le port 22"
+  answer: 0
+  points: 1
+  expl: "PermitRootLogin no bloque la connexion SSH directe en tant que root (il faut passer par un compte puis s'élever), sans interdire SSH aux autres utilisateurs."
+- q: "Quelle commande affiche la politique d'âge du mot de passe d'un utilisateur ?"
+  choices:
+    - "chage -l utilisateur"
+    - "passwd -S utilisateur"
+    - "getent passwd utilisateur"
+    - "faillock --user utilisateur"
+  answer: 0
+  points: 1
+  expl: "chage -l affiche les règles de vieillissement du mot de passe (âge minimum/maximum, date d'expiration) ; passwd -S ne montre que le statut du compte, pas l'âge."
+- q: "Un umask de 027 sur un fichier créé avec 0666 donne :"
+  choices:
+    - "-rw-r----- (640)"
+    - "-rw-rw-rw- (666)"
+    - "-rw------- (600)"
+    - "-r--r----- (440)"
+  answer: 0
+  points: 1
+  expl: "Le umask retire des droits au mode demandé : 0666 moins 027 (qui masque l'écriture groupe et toutes les droits monde) donne -rw-r-----, soit 640."
+- q: "Où place-t-on de préférence un umask global par utilisateur ?"
+  choices:
+    - "un script dans /etc/profile.d/"
+    - "dans /etc/fstab"
+    - "dans le crontab root"
+    - "dans /etc/hosts"
+  answer: 0
+  points: 1
+  expl: "Un script dans /etc/profile.d/ applique le umask à chaque ouverture de session, de façon centralisée ; fstab, le crontab ou hosts n'ont rien à voir avec l'environnement de connexion."
+- q: "La règle de sauvegarde 3-2-1 impose :"
+  choices:
+    - "3 copies, 2 médias différents, 1 hors site"
+    - "3 sauvegardes par jour sur le même disque"
+    - "2 copies chiffrées et 1 mot de passe fort"
+    - "1 sauvegarde hebdomadaire suffisante"
+  answer: 0
+  points: 1
+  expl: "La règle 3-2-1 demande 3 copies des données, sur 2 types de médias différents, dont 1 conservée hors site, pour résister à une panne locale comme à un sinistre."
+- q: "Quel facteur d'authentification est « quelque que vous avez » ?"
+  choices:
+    - "une clé USB FIDO / un téléphone"
+    - "un mot de passe"
+    - " une empreinte digitale apprise par cœur"
+    - "un login"
+  answer: 0
+  points: 1
+  expl: "« Ce que vous avez » désigne un objet physique possédé par l'utilisateur, comme une clé FIDO ou un téléphone ; le mot de passe et le login relèvent de « ce que vous savez »."
+- q: "Sur un système sans systemd, comment démarrer sshd sur un port custom ?"
+  choices:
+    - "/usr/sbin/sshd -p 2222 (après mkdir -p /run/sshd)"
+    - "systemctl start ssh"
+    - "service ssh restart"
+    - "ip route add default port 2222"
+  answer: 0
+  points: 1
+  expl: "Hors systemd on lance directement le démon sur le port voulu avec /usr/sbin/sshd -p 2222, en créant au préalable /run/sshd dont il a besoin ; systemctl et service sont des outils systemd."
+- q: "faillock (PAM) sert à :"
+  choices:
+    - "verrouiller un compte après N échecs d'authentification"
+    - "chiffrer /etc/shadow"
+    - "journaliser les connexions SSH réussies"
+    - "forcer le MFA"
+  answer: 0
+  points: 1
+  expl: "Le module PAM faillock verrouille temporairement un compte après un nombre configurable d'échecs d'authentification, ce qui freine les attaques par force brute."
+- q: "Pour rendre une clé SSH inutilisable en cas de vol sans changer le mot de passe root :"
+  choices:
+    - "protéger la clé privée par passphrase et désactiver PasswordAuthentication"
+    - "changer le port 22 en 2222 uniquement"
+    - "supprimer /etc/ssh/sshd_config"
+    - "mettre umask 000"
+  answer: 0
+  points: 1
+  expl: "Une passphrase rend la clé privée inutilisable si elle est volée, et désactiver PasswordAuthentication ferme la porte au devinette de mot de passe, le tout sans toucher au mot de passe root."
+- q: "Quel fichier stocke les empreintes des mots de passe Linux ?"
+  choices:
+    - "/etc/shadow"
+    - "/etc/passwd"
+    - "/etc/group"
+    - "/etc/security/opasswd seulement"
+  answer: 0
+  points: 1
+  expl: "Les empreintes (hash) des mots de passe sont stockées dans /etc/shadow, lisible seulement par root ; /etc/passwd ne contient que les comptes, sans hash."

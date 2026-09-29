@@ -1,0 +1,26 @@
+checks:
+- id: exporter_metrics
+  node: mon
+  cmd: curl -s -m 3 http://10.25.0.20:9100/metrics | grep -c '^node_cpu'
+  expect: ^[1-9]
+  points: 2
+  hint: 'Le node_exporter ne tourne pas (ou mal lie) sur tgt : ''node_exporter --web.listen-address=10.25.0.20:9100 &'' sur tgt (le binaire est /usr/bin/prometheus-node-exporter : creer le lien node_exporter
+    -> ce binaire) (etape 1).'
+- id: prom_listening
+  node: mon
+  cmd: ss -tln | grep -c ":9090"
+  expect: ^[1-9]$
+  points: 1
+  hint: 'Prometheus doit ecouter 9090 : ''prometheus --config.file=/root/prometheus.yml --storage.tsdb.path=/var/lib/prometheus &'' apres avoir ecrit la config (etape 2).'
+- id: target_up
+  node: mon
+  cmd: curl -s -m 5 http://localhost:9090/api/v1/targets | grep -c '"health":"up"'
+  expect: ^[1-9]$
+  points: 2
+  hint: '/root/prometheus.yml doit declarer un scrape_configs -> targets [10.25.0.20:9100]. ''health: up'' = l''exporter est joint. Erreur de connexion : verifier l''IP du job ou le port (etape 1).'
+- id: query_up_tgt
+  node: mon
+  cmd: curl -s -m 5 'http://localhost:9090/api/v1/query?query=up%7Bjob%3D%22tgt%22%7D' | grep -c '"1"'
+  expect: ^[1-9]$
+  points: 2
+  hint: 'La requete ''up{job="tgt"}'' doit renvoyer 1 : le job s''appelle exactement ''tgt'' dans la config (job_name: tgt) et a ete scrape au moins une fois (etape 2-3).'

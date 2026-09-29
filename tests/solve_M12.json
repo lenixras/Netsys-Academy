@@ -1,0 +1,11 @@
+{
+  "host1": [
+    "sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config",
+    "grep -q '^PermitRootLogin no' /etc/ssh/sshd_config || echo 'PermitRootLogin no' >> /etc/ssh/sshd_config",
+    "id admin2 || useradd -m -s /bin/bash admin2",
+    "chage -m 7 -M 90 admin2",
+    "echo 'umask 027' > /etc/profile.d/99-hardening.sh && chmod 0644 /etc/profile.d/99-hardening.sh",
+    "mkdir -p /root/backup && gzip -c /etc/passwd > /root/backup/etc-passwd.gz",
+    "ss -tln | grep -q ':2222' || { mkdir -p /run/sshd && ssh-keygen -A && /usr/sbin/sshd -p 2222; }"
+  ]
+}

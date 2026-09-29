@@ -1,0 +1,31 @@
+id: M18
+title: "Incident support : l'intranet est mort"
+wave: 3
+prereqs: ['M4']
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: srv
+    cmd: 'ip addr add 10.18.0.10/24 dev eth1 && ip link set eth1 up'
+  - node: cli
+    cmd: 'ip addr add 10.18.0.30/24 dev eth1 && ip link set eth1 up'
+  - node: cli
+    cmd: 'echo nameserver 10.18.0.99 > /etc/resolv.conf'
+  - node: srv
+    cmd: 'echo b3B0aW9ucyB7CiAgICBkaXJlY3RvcnkgIi92YXIvY2FjaGUvYmluZCI7CiAgICBsaXN0ZW4tb24gcG9ydCA1MyB7IGFueTsgfTsKICAgIGFsbG93LXF1ZXJ5IHsgYW55OyB9OwogICAgcmVjdXJzaW9uIG5vOwp9Owp6b25lICJpbnRyYW5ldC5sYWIxOCIgewogICAgdHlwZSBtYXN0ZXI7CiAgICBmaWxlICIvcm9vdC9kYi5pbnRyYW5ldC5sYWIxOCI7Cn07Cg== | base64 -d > /root/named.conf'
+  - node: srv
+    cmd: 'echo JFRUTCAzNjAwCkAgICBJTiAgU09BIG5zLmludHJhbmV0LmxhYjE4LiByb290LmludHJhbmV0LmxhYjE4LiAoCiAgICAgICAgMjAyNjA5MjgwMSA7IHNlcmlhbAogICAgICAgIDM2MDAgICAgICAgOyByZWZyZXNoCiAgICAgICAgNjAwICAgICAgICA7IHJldHJ5CiAgICAgICAgNjA0ODAwICAgICA7IGV4cGlyZQogICAgICAgIDYwICkgICAgICAgOyBtaW5pbXVtCiAgICBJTiAgTlMgIG5zLmludHJhbmV0LmxhYjE4LgpucyAgIElOICBBICAxMC4xOC4wLjEwCndlYiAgSU4gIEEgIDEwLjE4LjAuOTkK | base64 -d > /root/db.intranet.lab18'
+  - node: srv
+    cmd: 'mkdir -p /var/cache/bind /root/www && echo OK > /root/www/index.html'
+  - node: srv
+    cmd: 'named -c /root/named.conf -g > /root/named.log 2>&1 &'
+  - node: srv
+    cmd: 'echo cG9ydD0wCmludGVyZmFjZT1ldGgxCmRoY3AtcmFuZ2U9MTAuMTguOS4xMDAsMTAuMTguOS4yMDAsMjU1LjI1NS4yNTUuMCwxaApkaGNwLW9wdGlvbj0zLDEwLjE4LjAuMTAKZGhjcC1sZWFzZS1tYXg9NjQKbG9nLWRoY3AK | base64 -d > /root/dnsmasq.conf'
+validation:
+  quiz_min_score: 70
+  lab_required: true

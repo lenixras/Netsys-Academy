@@ -1,0 +1,55 @@
+questions:
+- q: "Que fait un port trunk 802.1Q ?"
+  choices:
+    - "Il transporte plusieurs VLANs en trames tagguées"
+    - "Il coupe le spanning-tree"
+    - "Il attribue une adresse IP aux trames"
+    - "Il filtre les broadcast"
+  answer: 0
+  points: 1
+  expl: "Un port trunk accepte plusieurs VLANs simultanément : il insère un tag 802.1Q portant le VID dans chaque trame pour dire à quel VLAN elle appartient."
+- q: "Sur un bridge Linux, un port access VLAN 10 se configure avec :"
+  choices:
+    - "bridge vlan add dev ethX vid 10 pvid untagged"
+    - "ip link set ethX vlan 10"
+    - "bridge port add ethX vlan10"
+    - "vconfig add ethX 10 sur le bridge"
+  answer: 0
+  points: 1
+  expl: "« pvid untagged » marque le port en access : le trafic entrant est classé dans le VLAN 10 et sort sans tag, l'équivalent Linux d'un port access de switch."
+- q: "Sans VLAN, tous les ports d'un switch forment :"
+  choices:
+    - "un seul domaine de diffusion"
+    - "autant de domaines que de ports"
+    - "un seul routeur"
+    - "une table FDB vide"
+  answer: 0
+  points: 1
+  expl: "Sans segmentation, tout le switch est un seul domaine de diffusion : chaque broadcast (ARP, DHCP...) est inondé sur tous les ports, ce que les VLANs évitent."
+- q: "Le spanning-tree protège contre :"
+  choices:
+    - "les boucles L2 dues aux liens redondants"
+    - "les attaques DNS"
+    - "le MTU trop faible"
+    - "l'épuisement des baux DHCP"
+  answer: 0
+  points: 1
+  expl: "STP (802.1D) bloque mathématiquement certains liens redondants pour casser les boucles de couche 2, qui autrement font tourner les broadcast en boucle et saturent le switch."
+- q: "Le routage inter-VLAN router-on-a-stick nécessite sur le port switch :"
+  choices:
+    - "un trunk transportant les VLANs routés"
+    - "un seul access par VLAN"
+    - "stp_state 0"
+    - "le vlan_filtering désactivé"
+  answer: 0
+  points: 1
+  expl: "Un seul câble relie le routeur au switch : le port doit donc être trunk pour transporter les trames tagguées de tous les VLANs, le routeur créant une sous-interface par VID."
+- q: "Dans 802.1Q, l'identifiant VLAN (VID) est codé sur :"
+  choices:
+    - "12 bits (4094 VLANs utilisables)"
+    - "8 bits"
+    - "16 bits"
+    - "32 bits"
+  answer: 0
+  points: 1
+  expl: "Le champ VID du tag 802.1Q fait 12 bits, soit 4096 valeurs dont 0 et 4095 réservées : il reste 4094 VLANs utilisables."

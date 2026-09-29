@@ -1,0 +1,34 @@
+checks:
+- id: peer_estab_r1
+  node: r1
+  cmd: vtysh -c 'show bgp summary' | grep '^10.0.21.2' | grep -vcE '(Active|Idle|Connect|Admin|Policy)'
+  expect: ^1$
+  points: 2
+  hint: 'Pas de session BGP etablie avec r2 : ''vtysh -c ''''conf t'''' -c ''''router bgp 64512'''' -c ''''no bgp ebgp-requires-policy'''' -c ''''neighbor 10.0.21.2 remote-as 64513'''' -c end''. L''etat
+    doit devenir un nombre de prefixes recu (Established). FRR bloque par defaut les echanges eBGP sans politique : ''no bgp ebgp-requires-policy'' = le comportement Cisco par defaut.'
+- id: peer_estab_r2
+  node: r2
+  cmd: vtysh -c 'show bgp summary' | grep '^10.0.21.1' | grep -vcE '(Active|Idle|Connect|Admin|Policy)'
+  expect: ^1$
+  points: 2
+  hint: 'Symetrique chez r2 : router bgp 64513 + no bgp ebgp-requires-policy + neighbor 10.0.21.1 remote-as 64512.'
+- id: route_net_h2_in_r1
+  node: r1
+  cmd: vtysh -c "show ip route bgp" | grep -c "10.21.2.0/24"
+  expect: ^1$
+  points: 2
+  hint: 'r1 doit APPRENDRE le LAN de r2 : c''est r2 qui doit annoncer ''network 10.21.2.0/24'' sous ''router bgp 64513'' (avec address-family ipv4 unicast chez FRR : ''vtysh -c conf t -c ''''router bgp
+    64513'''' -c ''''address-family ipv4 unicast'''' -c ''''network 10.21.2.0/24'''' -c end).'
+- id: route_net_h1_in_r2
+  node: r2
+  cmd: vtysh -c "show ip route bgp" | grep -c "10.21.1.0/24"
+  expect: ^1$
+  points: 2
+  hint: Pareil pour 10.21.1.0/24 announce par r1 dans 'router bgp 64512'.
+- id: ping_h1_h2
+  node: h1
+  cmd: ping -c2 -W2 10.21.2.10
+  expect: 0% packet loss
+  points: 3
+  hint: 'Le ping h1->h2 passe quand les deux routes BGP existent (les checks precedents) et que le transit est autorise (ip_forward deja en place). Verifier ''ip route | grep 10.21.2'' sur r1 : la route
+    doit aussi etre INSTALLEE dans le noyau par zebra.'

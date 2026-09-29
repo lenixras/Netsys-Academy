@@ -1,0 +1,25 @@
+id: M20
+title: 'IPv6 en pratique : adresses, SLAAC et routage'
+wave: 2
+prereqs:
+- M1
+- M8
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 30
+  setup:
+  - node: r1
+    cmd: sysctl -qw net.ipv6.conf.all.forwarding=1
+  - node: r1
+    cmd: ip -6 addr add 2001:db8:acad:1::1/64 dev eth1 && ip -6 addr add 2001:db8:acad:2::1/64 dev eth2 && ip link set eth1 up && ip link set eth2 up
+  - node: h1
+    cmd: sysctl -qw net.ipv6.conf.eth1.accept_ra=1 && sysctl -qw net.ipv6.conf.all.accept_ra=1 && ip link set eth1 up
+  - node: r1
+    cmd: echo '# Ecrire /etc/radvd.conf pour annoncer le prefixe 2001:db8:acad:1::/64 sur eth1' > /root/CONSIGNE.txt
+validation:
+  quiz_min_score: 70
+  lab_required: true

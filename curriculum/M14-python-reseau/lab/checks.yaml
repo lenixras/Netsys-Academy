@@ -1,0 +1,21 @@
+checks:
+- id: pytest_tout_vert
+  node: dev
+  cmd: cd /root && python3 -m pytest -q test_netcalc.py
+  points: 7
+  hint: "Des tests echouent : les 4 fonctions de /root/netcalc.py levent encore NotImplementedError (ou une erreur en executant). Edite le fichier avec l'editeur (noeud dev) puis relance cd /root && python3 -m pytest -q test_netcalc.py pour voir quel test precise bloque. Pense a http_get_status : un 404 leve urllib.error.HTTPError, il faut capturer cette exception et retourner err.code."
+- id: micro_cidr_hosts
+  node: dev
+  cmd: "cd /root && python3 -c 'from netcalc import cidr_hosts; print(cidr_hosts(\"10.0.0.0/24\"))' | grep -qx 254"
+  points: 1
+  hint: "cidr_hosts('10.0.0.0/24') ne renvoie pas 254. La formule est 2 ** (32 - prefix) - 2 : on retire l'adresse reseau et le broadcast. La fonction doit accepter un entier (28 -> 14) et une chaine CIDR : si c'est une chaine, garde seulement ce qu'il y a apres le / avant de convertir en int."
+- id: micro_first_usable
+  node: dev
+  cmd: "cd /root && python3 -c 'from netcalc import first_usable; print(first_usable(\"192.168.1.0/24\"))' | grep -qx 192.168.1.1"
+  points: 1
+  hint: "first_usable ne renvoie pas 192.168.1.1. Pas besoin de calculer a la main : le module standard ipaddress fait tout. Ecris net = ipaddress.ip_network(cidr, strict=False) puis retourne la premiere adresse de net.hosts() convertie en str (le premier element, pas [1] ni [2])."
+- id: micro_mac_format
+  node: dev
+  cmd: "cd /root && python3 -c 'from netcalc import mac_format; print(mac_format(\"aabb-ccdd-eeff\"))' | grep -qx 'AA:BB:CC:DD:EE:FF'"
+  points: 1
+  hint: "mac_format ne renvoie pas AA:BB:CC:DD:EE:FF. Deux etapes : nettoie les separateurs avec re.sub(r'[^0-9a-fA-F]', '', mac) pour garder 12 caracteres hexadecimaux, puis regroupe-les 2 par 2, joins avec : et mets le resultat en majuscules (.upper())."

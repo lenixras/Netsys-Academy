@@ -1,0 +1,11 @@
+{
+  "srv": [
+    "cd /root/www && nohup python3 -m http.server 80 > /root/www.log 2>&1 &",
+    "sed -i 's|web  IN  A  10.18.0.99|web  IN  A  10.18.0.10|; s/2026092801/2026092802/' /root/db.intranet.lab18",
+    "pkill -x named; sleep 1; named -c /root/named.conf -g > /root/named.log 2>&1 &",
+    "sed -i 's|dhcp-range=.*|dhcp-range=10.18.0.100,10.18.0.150,255.255.255.0,1h|' /root/dnsmasq.conf"
+  ],
+  "cli": [
+    "echo nameserver 10.18.0.10 > /etc/resolv.conf"
+  ]
+}

@@ -1,0 +1,28 @@
+id: M26
+title: 'DHCP à travers les routes : le relais'
+wave: 4
+prereqs:
+- M4
+- M6
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: srv
+    cmd: ip addr add 10.26.1.10/24 dev eth1 && ip link set eth1 up && ip route replace 10.26.2.0/24 via 10.26.1.1 dev eth1 && sysctl -qw net.ipv4.ip_forward=1
+  - node: rtr
+    cmd: ip addr add 10.26.1.1/24 dev eth2 && ip addr add 10.26.2.1/24 dev eth1 && ip link set eth1 up && ip link set eth2 up && sysctl -qw net.ipv4.ip_forward=1
+  - node: cli
+    cmd: ip link set eth1 up
+  - node: srv
+    cmd: echo cG9ydD0wCmludGVyZmFjZT1ldGgxCmRoY3AtcmFuZ2U9MTAuMjYuMi4xMDAsMTAuMjYuMi4xNTAsMjU1LjI1NS4yNTUuMCw4aApkaGNwLW9wdGlvbj0zLDEwLjI2LjIuMQpsb2ctZGhjcAo= | base64 -d > /root/dnsmasq.conf
+  - node: srv
+    cmd: echo 'Le DHCP est cote srv (10.26.1.0/24) ; les clients sont sur LAN2 (10.26.2.0/24) sans serveur. srv a deja une route de retour vers 10.26.2.0/24 via rtr (sinon la reponse part dans le vide).'
+      > /root/CONSIGNE.txt
+validation:
+  quiz_min_score: 70
+  lab_required: true

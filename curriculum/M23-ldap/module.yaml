@@ -1,0 +1,23 @@
+id: M23
+title: 'LDAP : un annuaire pour centraliser les identités'
+wave: 3
+prereqs:
+- M3
+- M4
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: srv
+    cmd: ip addr add 10.23.0.10/24 dev eth1 && ip link set eth1 up
+  - node: cli
+    cmd: ip addr add 10.23.0.30/24 dev eth1 && ip link set eth1 up
+  - node: srv
+    cmd: mkdir -p /var/lib/ldap && chown openldap:openldap /var/lib/ldap
+validation:
+  quiz_min_score: 70
+  lab_required: true

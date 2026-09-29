@@ -1,0 +1,100 @@
+questions:
+- q: "Quel hook netfilter modifie la destination d'un paquet avant la décision de routage ?"
+  choices:
+    - "prerouting (DNAT)"
+    - "postrouting (SNAT)"
+    - "input"
+    - "forward"
+  answer: 0
+  points: 1
+  expl: "DNAT réécrit l'adresse de destination très tôt, dans le hook prerouting, avant la décision de routage, ce qui permet de rediriger un trafic vers un serveur interne. postrouting/SNAT agit en sortie."
+- q: "Un pare-feu à états autorise le trafic de retour grâce à :"
+  choices:
+    - "la table conntrack et ct state established,related"
+    - "une règle ouverte sur tous les ports"
+    - "le masque de sous-réseau"
+    - "la priorité du spanning-tree"
+  answer: 0
+  points: 1
+  expl: "Le pare-feu mémorise les connexions suivies dans conntrack ; la correspondance ct state established,related laisse passer le trafic de retour d'une session déjà autorisée, sans ouvrir tous les ports."
+- q: "Sur un routeur Linux, le transit entre deux interfaces est filtré par la chaîne :"
+  choices:
+    - "forward"
+    - "input"
+    - "output"
+    - "prerouting uniquement"
+  answer: 0
+  points: 1
+  expl: "Les paquets qui ne sont pas destinés à la machine mais transitent d'une interface à l'autre passent par la chaîne forward ; input et output ne concernent que le trafic local."
+- q: "net.ipv4.ip_forward à 0 sur le pare-feu implique que :"
+  choices:
+    - "aucun paquet destiné à autrui n'est relayé, même avec des règles ouvertes"
+    - "le NAT est automatiquement activé"
+    - "les paquets destinés à la machine sont jetés"
+    - "nftables refuse de charger les règles"
+  answer: 0
+  points: 1
+  expl: "Sans ip_forward=1 le noyau ne relaye aucun paquet destiné à autrui, donc les règles de transit restent sans effet. Le sort des paquets destinés à la machine (chaîne input) est indépendant."
+- q: "Masquerade (NAPT) vs SNAT classique :"
+  choices:
+    - "masquerade prend dynamiquement l'adresse de l'interface sortante"
+    - "masquerade ne marche qu'en IPv6"
+    - "SNAT ne peut pas traduire les ports"
+    - "les deux sont des synonymes sans différence"
+  answer: 0
+  points: 1
+  expl: "Masquerade est un SNAT dynamique qui utilise l'adresse de l'interface sortante, utile quand elle change (lien DHCP), alors que SNAT classique impose une adresse IP fixe en configuration."
+- q: "Publier un serveur interne sur le port public 8443 se fait par :"
+  choices:
+    - "une règle DNAT dans prerouting"
+    - "une règle masquerade dans postrouting"
+    - "une chaîne input en policy accept"
+    - "un set d'adresses"
+  answer: 0
+  points: 1
+  expl: "Publier un service interne sur un port public passe par une DNAT dans prerouting, qui traduit le port public (par exemple 8443) vers l'IP et le port du serveur interne."
+- q: "nftables évalue les règles :"
+  choices:
+    - "dans l'ordre, premier verdict correspondant gagnant"
+    - "par spécificité du masque"
+    - "du plus permissif au plus restrictif"
+    - "en parallèle puis fusionne les verdicts"
+  answer: 0
+  points: 1
+  expl: "nftables évalue les règles séquentiellement et applique le premier verdict correspondant ; contrairement à iptables, le classement par spécificité n'intervient pas."
+- q: "Pour afficher l'état réellement actif du filtrage :"
+  choices:
+    - "nft list ruleset"
+    - "iptables -L"
+    - "systemctl status nftables"
+    - "cat /proc/net/udp"
+  answer: 0
+  points: 1
+  expl: "nft list ruleset affiche le jeu de règles réellement chargé dans le noyau ; systemctl status ne dit que si le service tourne, et iptables -L peut masquer l'état réel sous nft."
+- q: "Dans une architecture en zones, la DMZ désigne :"
+  choices:
+    - "un semi-domaine de confiance, exposé au WAN mais isolé du LAN"
+    - "le VLAN des administrateurs"
+    - "le réseau de management de la sonde"
+    - "un cache DNS"
+  answer: 0
+  points: 1
+  expl: "La DMZ est un semi-domaine de confiance : joignable depuis le WAN pour les services publiés mais isolée du LAN, afin de limiter la portée d'une compromission."
+- q: "Un « set » nftables sert à :"
+  choices:
+    - "grouper des adresses/ports typés, testés en une seule opération"
+    - "définir la politique par défaut d'une chaîne"
+    - "compter les paquets par interface"
+    - "charger un module noyau"
+  answer: 0
+  points: 1
+  expl: "Un set regroupe des adresses ou ports du même type, testés en une seule opération, ce qui remplace des dizaines de règles et préserve les performances quand la liste grandit."
+- q: "Une règle d'autorisation placée après un drop qui correspond déjà au paquet :"
+  choices:
+    - "est sans effet : le premier verdict correspondant gagne"
+    - "annule le drop précédent"
+    - "est remontée en tête par nft automatiquement"
+    - "ne concerne que la chaîne input"
+  answer: 0
+  points: 1
+  expl: "Comme le premier verdict correspondant gagne, une règle d'autorisation placée derrière un drop qui matche déjà le paquet ne sera jamais atteinte : elle est sans effet."

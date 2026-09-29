@@ -1,0 +1,37 @@
+checks:
+- id: user_devops_uid
+  node: admin1
+  cmd: getent passwd devops
+  expect: "devops:x:1500:1500:"
+  points: 2
+  hint: "La ligne attendue dans /etc/passwd est devops:x:1500:1500, donc UID 1500 ET GID 1500. Cree le compte avec useradd -u 1500 -m -s /bin/bash devops (le groupe prive homonyme herite aussi de 1500), puis verifie avec getent passwd devops (etape 1)."
+- id: devops_membre_staff
+  node: admin1
+  cmd: id -nG devops
+  expect: "staff"
+  points: 1
+  hint: "devops doit etre membre du groupe staff en plus de son groupe principal. Cree le groupe si besoin (groupadd -f staff) puis ajoute l'appartenance avec usermod -aG staff devops : sans le -a, les groupes secondaires existants sont ecrases. Verifie avec id -nG devops (etape 2)."
+- id: ip_secondaire_eth1
+  node: admin1
+  cmd: ip -br a show eth1
+  expect: '10\.198\.11\.50/24'
+  points: 2
+  hint: "Il faut ajouter l'adresse secondaire 10.198.11.50/24 sur eth1 : active d'abord l'interface (ip link set eth1 up) puis ip addr add 10.198.11.50/24 dev eth1. Contrairement a ifconfig, ip addr add ajoute sans effacer les autres adresses. Controle avec ip -br a show eth1 (etape 3)."
+- id: ip_forward_actif
+  node: admin1
+  cmd: cat /proc/sys/net/ipv4/ip_forward
+  expect: "^1$"
+  points: 2
+  hint: "Le forwarding IPv4 est eteint (0) au demarrage : un routeur potentiel doit le declarer explicitement. Active-le avec sysctl -w net.ipv4.ip_forward=1 puis relis /proc/sys/net/ipv4/ip_forward qui doit afficher 1 (etape 4)."
+- id: port_ecoute_8080
+  node: admin1
+  cmd: ss -tln
+  expect: ":8080"
+  points: 2
+  hint: "Une ligne :8080 doit apparaitre dans ss -tln (sockets TCP en ecoute, en format numerique). Lance un serveur HTTP en arriere-plan sur ce port : nohup python3 -m http.server 8080 > /dev/null 2>&1 & puis verifie avec ss -tln | grep 8080 (etape 5)."
+- id: log_deploy_non_vide
+  node: admin1
+  cmd: test -s /var/log/deploy.log && echo LOG
+  expect: "LOG"
+  points: 1
+  hint: "/var/log/deploy.log doit exister et contenir au moins une ligne. Sans demon syslog dans le conteneur, journalise par redirection : echo date+message >> /var/log/deploy.log (>> ajoute, > ecrase), puis verifie avec cat /var/log/deploy.log (etape 6)."

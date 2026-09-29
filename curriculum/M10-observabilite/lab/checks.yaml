@@ -1,0 +1,40 @@
+checks:
+- id: snmpd_up
+  node: agent
+  cmd: pgrep -x snmpd
+  points: 1
+  hint: "Aucun snmpd ne tourne sur agent. Cree /root/snmpd.conf (agentAddress udp:161, rocommunity netsys) puis lance-le a la main : snmpd -f -Lo -C -c /root/snmpd.conf > /root/snmpd.log 2>&1 & (etape 2 du scénario, regarde /root/snmpd.log s'il refuse de demarrer)."
+- id: link_mon_agent
+  node: mon
+  cmd: ping -c2 -W2 10.10.100.1
+  expect: 0% packet loss
+  points: 1
+  hint: "Le lien d'observabilite n'est pas pret : monte eth1 avec la bonne adresse sur chaque noeud (agent : ip link set eth1 up && ip addr add 10.10.100.1/24 dev eth1 ; mon : 10.10.100.2/24), voir etape 1."
+- id: snmp_sysdescr_v2c
+  node: mon
+  cmd: snmpget -v2c -c netsys -t 2 -r 1 10.10.100.1 1.3.6.1.2.1.1.1.0
+  expect: NET-SNMP|Linux|Debian
+  points: 1
+  hint: "snmpget ne repond pas depuis mon : snmpd doit tourner sur agent et accepter la communaute de lecture netsys (rocommunity netsys dans /root/snmpd.conf). Teste d'abord ping 10.10.100.1 puis snmpwalk -v2c -c netsys 10.10.100.1 1.3.6.1.2.1.1 (etapes 2 et 3)."
+- id: snmp_syscontact_netsys
+  node: mon
+  cmd: snmpget -v2c -c netsys -Ov -t 2 -r 1 10.10.100.1 1.3.6.1.2.1.1.4.0
+  expect: netsys
+  points: 2
+  hint: "L'OID sysContact (1.3.6.1.2.1.1.4.0) ne renvoie rien contenant netsys : ajoute une ligne sysContact noc-netsys@lab10.local dans /root/snmpd.conf, puis redemarre snmpd (kill le process et relance la commande de l'etape 2)."
+- id: snmp_iftable_count
+  node: mon
+  cmd: snmpwalk -v2c -c netsys -t 2 -r 1 10.10.100.1 1.3.6.1.2.1.2.2.1.2 | wc -l
+  expect: "[1-9][0-9]*$"
+  points: 2
+  hint: "Le walk de la ifTable (sous-arbre 1.3.6.1.2.1.2.2.1.2, inventaire des interfaces) ne renvoie aucune ligne : snmpd doit repondre en v2c avec la communaute netsys depuis mon. Verifie d'abord snmpwalk -v2c -c netsys 10.10.100.1 1.3.6.1.2.1.1 (etape 3)."
+- id: syslog_collector_listening
+  node: mon
+  cmd: "ss -uln | grep -q ':514' || pgrep -f 'nc -u'"
+  points: 1
+  hint: "Aucun collecteur syslog n'ecoute en UDP/514 sur mon : lance le script /root/collect.py (nohup python3 /root/collect.py > /dev/null 2>&1 &) ou, si nc est disponible, nc -u -k -l -p 514 >> /root/syslog.log 2>/dev/null & (etape 5). Controle avec ss -uln | grep 514."
+- id: syslog_message_stored
+  node: mon
+  cmd: grep -q TESTMSG /root/syslog.log
+  points: 2
+  hint: "Le message de test n'est pas archive dans /root/syslog.log : envoie-le depuis agent avec logger -n 10.10.100.2 -P 514 -t labo10 TESTMSG (etape 5). Si rien n'arrive, verifie que ton collecteur ecoute bien et que le ping mon vers agent passe."

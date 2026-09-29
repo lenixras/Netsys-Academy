@@ -1,0 +1,17 @@
+checks:
+- id: playbook_creer_svcapp
+  node: tgt
+  cmd: id svcapp
+  points: 4
+  hint: "Le compte svcapp n'existe pas sur tgt : ce n'est pas a la main qu'il faut le creer, mais par le playbook. Ajoute dans /root/site.yml (noeud ctl) une tache ansible.builtin.user (name: svcapp, system: true, shell: /usr/sbin/nologin, create_home: false) puis execute cd /root && ansible-playbook -i inventory.ini site.yml (etapes 4 et 5)."
+- id: playbook_motd_ansible
+  node: tgt
+  cmd: 'grep -q "Managed by Ansible" /etc/motd'
+  points: 3
+  hint: "/etc/motd ne contient pas Managed by Ansible : la tache copy manque dans le playbook (ou n'a pas ete executee). Dans /root/site.yml ajoute une tache ansible.builtin.copy avec dest: /etc/motd et content: Managed by Ansible suivi de \\n, puis lance ansible-playbook -i inventory.ini site.yml depuis /root sur ctl (etape 4)."
+- id: ansible_ping_depuis_ctl
+  node: ctl
+  cmd: cd /root && ansible -i inventory.ini all -m ping
+  expect: SUCCESS
+  points: 3
+  hint: "Le ping Ansible echoue (UNREACHABLE ?). Trois conditions : la cle SSH de ctl est dans /root/.ssh/authorized_keys de tgt (ssh-keygen puis ssh-copy-id -o StrictHostKeyChecking=no root@10.15.0.2, mot de passe ansible), l'inventaire /root/inventory.ini contient tgt ansible_host=10.15.0.2, et ansible.cfg desactive host_key_checking. Teste d'abord ssh -o StrictHostKeyChecking=no root@10.15.0.2 hostname sans mot de passe, et lance toujours la commande depuis /root."

@@ -1,0 +1,28 @@
+id: M21
+title: 'BGP : faire parler deux organisations'
+wave: 3
+prereqs:
+- M6
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: r1
+    cmd: ip link set eth1 up && ip link set eth2 up && vtysh -c 'conf t' -c 'interface eth1' -c 'ip address 10.0.21.1/29' -c 'interface eth2' -c 'ip address 10.21.1.1/24' -c 'end'
+  - node: r2
+    cmd: ip link set eth1 up && ip link set eth2 up && vtysh -c 'conf t' -c 'interface eth1' -c 'ip address 10.0.21.2/29' -c 'interface eth2' -c 'ip address 10.21.2.1/24' -c 'end'
+  - node: r1
+    cmd: sysctl -qw net.ipv4.ip_forward=1
+  - node: r2
+    cmd: sysctl -qw net.ipv4.ip_forward=1
+  - node: h1
+    cmd: ip addr add 10.21.1.10/24 dev eth1 && ip link set eth1 up && ip route replace default via 10.21.1.1
+  - node: h2
+    cmd: ip addr add 10.21.2.10/24 dev eth1 && ip link set eth1 up && ip route replace default via 10.21.2.1
+validation:
+  quiz_min_score: 70
+  lab_required: true

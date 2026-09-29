@@ -1,0 +1,16 @@
+name: m24-mail
+mgmt:
+  network: clab-m24
+  ipv4-subnet: 10.198.32.0/24
+topology:
+  nodes:
+    mx:
+      kind: linux
+      image: netsys/labnode:3
+    cli:
+      kind: linux
+      image: netsys/labnode:3
+  links:
+  - endpoints:
+    - mx:eth1
+    - cli:eth1

@@ -1,0 +1,35 @@
+checks:
+- id: arborescence_proj
+  node: h1
+  cmd: test -d /root/proj/bin && test -d /root/proj/logs && echo ARBO
+  expect: "ARBO"
+  points: 1
+  hint: "Il faut creer les deux repertoires /root/proj/bin et /root/proj/logs. Un seul mkdir suffit grace a l'option -p qui cree les parents manquants : mkdir -p /root/proj/bin /root/proj/logs (etape 1)."
+- id: hello_executable
+  node: h1
+  cmd: test -x /root/proj/bin/hello.sh && echo EXEC
+  expect: "EXEC"
+  points: 1
+  hint: "Le fichier /root/proj/bin/hello.sh doit exister ET avoir le droit d'execution. Cree-le avec l'editeur integre (bouton Fichiers, nœud h1), rends-le executable avec chmod +x /root/proj/bin/hello.sh, verifie avec ls -l (etape 2)."
+- id: hello_bonjour
+  node: h1
+  cmd: /root/proj/bin/hello.sh
+  expect: "bonjour"
+  points: 2
+  hint: "Le script doit s'executer sans erreur et afficher le mot bonjour. hello.sh commence par le shebang #!/bin/bash en premiere ligne, puis une ligne echo avec un texte contenant bonjour. Teste-le dans le terminal : /root/proj/bin/hello.sh (etape 2)."
+- id: perms_access_log
+  node: h1
+  cmd: stat -c %a /root/proj/logs/access.log
+  expect: "^640$"
+  points: 2
+  hint: "640 signifie proprietaire lecture+ecriture (rw-), groupe lecture seule (r--), rien pour les autres (---), soit -rw-r-----. Applique chmod 640 /root/proj/logs/access.log puis verifie avec stat -c %a /root/proj/logs/access.log (etape 3)."
+- id: compteur_erreurs
+  node: h1
+  cmd: 'test -s /root/proj/logs/access.log -a -s /root/proj/logs/erreur.txt -a "$(grep -c ERROR /root/proj/logs/access.log)" = "$(cat /root/proj/logs/erreur.txt)"'
+  points: 2
+  hint: "erreur.txt doit exister, etre non vide, et contenir exactement le nombre de lignes ERROR de access.log. Redirige le compte de grep -c dans le fichier : grep -c ERROR /root/proj/logs/access.log > /root/proj/logs/erreur.txt, puis verifie avec cat (etape 4)."
+- id: proc_background
+  node: h1
+  cmd: 'pgrep -f "[s]leep 4321"'
+  points: 2
+  hint: "Un processus dont la ligne de commande contient sleep 4321 doit tourner au moment de la verification. Lance-le detache du terminal : nohup sleep 4321 > /dev/null 2>&1 & (le & met en arriere-plan, nohup le protege a la fermeture), puis controle avec pgrep -f sleep 4321 (etape 5)."

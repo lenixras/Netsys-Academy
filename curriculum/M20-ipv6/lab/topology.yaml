@@ -1,0 +1,19 @@
+name: m20-ipv6
+mgmt:
+  network: clab-m20
+  ipv4-subnet: 10.198.28.0/24
+topology:
+  nodes:
+    r1:
+      kind: linux
+      image: netsys/labnode:3
+    h1:
+      kind: linux
+      image: netsys/labnode:3
+  links:
+  - endpoints:
+    - r1:eth1
+    - h1:eth1
+  - endpoints:
+    - r1:eth2
+    - h1:eth2

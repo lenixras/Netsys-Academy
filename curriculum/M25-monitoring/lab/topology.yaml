@@ -1,0 +1,16 @@
+name: m25-monitoring
+mgmt:
+  network: clab-m25
+  ipv4-subnet: 10.198.33.0/24
+topology:
+  nodes:
+    mon:
+      kind: linux
+      image: netsys/labnode:3
+    tgt:
+      kind: linux
+      image: netsys/labnode:3
+  links:
+  - endpoints:
+    - mon:eth1
+    - tgt:eth1

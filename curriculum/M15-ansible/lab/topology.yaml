@@ -1,0 +1,14 @@
+name: m15-ansible
+mgmt:
+  network: clab-m15
+  ipv4-subnet: 10.198.18.0/24
+topology:
+  nodes:
+    ctl:
+      kind: linux
+      image: netsys/labnode:2
+    tgt:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    - endpoints: ["ctl:eth1", "tgt:eth1"]

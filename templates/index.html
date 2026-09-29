@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}cursus{% endblock %}
+{% block content %}
+{% if not user %}
+<h1>netsys-academy 🎓</h1>
+<p class="muted">Apprendre les réseaux et les systèmes en pratiquant : cours, quiz,
+  labs conteneurisés et vérification automatique. Choisis un pseudo pour commencer.</p>
+<form method="post" action="/login" class="login">
+  <label>Pseudo <input name="user" required placeholder="ex: alice"></label>
+  <button>Entrer</button>
+</form>
+{% else %}
+<h1>Cursus — {{ user }}</h1>
+<p class="muted">Boucle d'apprentissage : 📖 cours → ❓ quiz → 🧪 labo → ✔ vérification.</p>
+<section id="progress"></section>
+{% set niveaux = {0: "🟢 Débutant", 1: "🟢 Débutant+", 2: "🟡 Intermédiaire", 3: "🟠 Avancé", 4: "🔴 Expert"} %}
+{% for wave, mods in waves %}
+<h2>Vague {{ wave }} — {{ niveaux[wave] }}</h2>
+<ul class="mods">
+  {% for m in mods %}
+  <li>
+    <a href="/lab/{{ m.id }}" data-lab="{{ m.id }}">{{ m.id }} — {{ m.title }}</a>
+    <span class="tag">{{ "labo conteneurs" if m.lab.mode == "topology" else "drills" }}</span>
+    <span class="chip muted" id="prog-{{ m.id }}"></span>
+  </li>
+  {% endfor %}
+</ul>
+{% endfor %}
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if user %}
+<script>
+fetch("/api/progress", {credentials:"same-origin"}).then(r=>r.json()).then(p=>{
+  const best = {};
+  p.best.forEach(b => best[b.lab] = b);
+  const titles = {};
+  document.querySelectorAll("a[data-lab]").forEach(a => {
+    titles[a.dataset.lab] = a.textContent.split("—")[1]?.trim() || a.dataset.lab;
+    const lab = a.dataset.lab, chips = [];
+    const l = best[lab], q = best[lab + "-quiz"];
+    if (l) chips.push(`labo ${l.score}/${l.max}${l.score==l.max?" ✓":""}`);
+    if (q) chips.push(`quiz ${q.score}/${q.max}${q.score==q.max?" ✓":""}`);
+    const c = document.getElementById("prog-" + lab);
+    if (c) c.textContent = chips.join(" · ");
+  });
+  // --- dashboard compétences
+  const DOM = {"Réseaux":["M0","M1","M5","M6","M7","M8","M9","M19","M20","M21","M22","M26"],
+    "Systèmes":["M2","M3","M4","M12","M23","M24","M25"],
+    "Sécurité & dépannage":["M10","M11","M13","M18"],
+    "Automatisation":["M14","M15","M16"],
+    "Capstone":["M17"]};
+  let done = 0, tot = 0, weak = null;
+  const rows = Object.entries(DOM).map(([dom, labs]) => {
+    let d = 0, got = 0, pts = 0;
+    labs.forEach(l => { const b = best[l]; if (b) { got += b.score; pts += b.max; if (b.score == b.max) d++; } });
+    done += d; tot += labs.length;
+    const pct = pts ? Math.round(100 * got / pts) : 0;
+    if (pts && d < labs.length && (!weak || pct < weak.pct)) weak = {dom, pct};
+    return `<tr><td>${dom}</td><td>${d}/${labs.length}</td>
+      <td><div class="bar"><div class="fill" style="width:${pct}%"></div></div></td></tr>`;
+  }).join("");
+  const rate = tot ? Math.round(100 * done / tot) : 0;
+  const lvl = rate >= 80 ? "🔴 Expert (ligne d'arrivée en vue)" : rate >= 50 ? "🟠 Avancé"
+    : rate >= 25 ? "🟡 Intermédiaire" : "🟢 Débutant";
+  const acquises = Object.entries(best).filter(([k,b]) => b.score == b.max && !k.endsWith("-quiz"))
+    .map(([k]) => k).sort();
+  document.getElementById("progress").innerHTML = `
+    <h2>Mon parcours</h2>
+    <p>Niveau estimé : <strong>${lvl}</strong> · ${done}/${tot} labs validés à 100 % ·
+      ${acquises.length ? "compétences acquises : " + acquises.join(", ") : "aucun lab validé pour l'instant — commence par M0 !"}</p>
+    <table><tr><th>Domaine</th><th>Validés</th><th>Réussite</th></tr>${rows}</table>
+    <p class="muted">${weak ? `📌 Domaine à renforcer : <strong>${weak.dom}</strong> (${weak.pct} % de réussite)`
+      : "💪 Tous les domaines sont validés — bravo !"}</p>`;
+});
+</script>
+{% endif %}
+{% endblock %}

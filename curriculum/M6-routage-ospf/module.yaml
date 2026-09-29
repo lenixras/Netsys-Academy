@@ -1,0 +1,14 @@
+id: M6
+title: "Routage (statique, OSPF, BGP intro)"
+wave: 2
+prereqs: [M1, M5, M8]
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+validation:
+  quiz_min_score: 70
+  lab_required: true

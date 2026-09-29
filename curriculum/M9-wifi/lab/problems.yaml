@@ -1,0 +1,43 @@
+# M9 — Drill Wi-Fi « plan d'implantation » (12 exercices statiques, partagés par tous).
+# Chaque item : id, prompt, answer (obligatoires) ; accepts (optionnel, variantes admises).
+# Les réponses numériques attendues sont en ASCII (moins "-89", point décimal ".").
+problems:
+- id: cell1
+  prompt: "Modèle de propagation intérieure fourni : RSSI (dBm) = Pt + 2 - (38 + 30 x log10(d)), avec Pt la puissance d'émission (dBm) et d la distance (m). Pour Pt = 15 dBm, jusqu'à quelle distance entière (en mètres, arrondie à l'unité inférieure) le RSSI reste-t-il au-dessus du seuil de conception -67 dBm ? Réponds par le nombre seul."
+  answer: "34"
+- id: dens1
+  prompt: "Une plateau de 900 m2 doit être couvert avec une densité d'1 point d'accès par 150 m2. Nombre minimal d'AP ? Réponds par le nombre seul."
+  answer: "6"
+- id: chan2g
+  prompt: "Combien de canaux 20 MHz non chevauchants compte la bande 2,4 GHz (plan européen 1/6/11) ? Réponds par le nombre seul."
+  answer: "3"
+- id: chanplan
+  prompt: "Trois AP adjacents A, B, C appliques le plan 1/6/11. A est sur le canal 1, B sur le canal 6. Sur quel canal placer C ? Réponds par le numéro de canal seul."
+  answer: "11"
+- id: snr1
+  prompt: "Signal reçu -67 dBm, bruit ambiant -92 dBm. SNR en dB (nombre seul, ex: 12) ?"
+  answer: "25"
+- id: snr2
+  prompt: "On exige un SNR minimal de 24 dB pour un débit visé, avec un signal reçu à -65 dBm. Quel niveau de bruit maximal (en dBm) le site peut-il tolérer ? Réponds signé, ex: -90."
+  answer: "-89"
+- id: cap1
+  prompt: "Un AP 802.11n 2x2 offre 300 Mbps de débit physique agrégé ; on retient 40 % de débit utile réel. Combien de clients au minimum peuvent recevoir chacun 4 Mbps ? Réponds par le nombre seul."
+  answer: "30"
+- id: cap2
+  prompt: "Un open-space de 40 utilisateurs exige 6 Mbps par poste (total 240 Mbps). Chaque AP livré ne peut porter que 120 Mbps utiles. Nombre minimal d'AP pour la capacité seule ? Réponds par le nombre seul."
+  answer: "2"
+- id: vlanwifi
+  prompt: "Le VLAN Wi-Fi 100 utilise le sous-réseau 10.17.100.0/25. Quelle est l'adresse de broadcast de ce sous-réseau ?"
+  answer: "10.17.100.127"
+- id: wpa3
+  prompt: "Quel protocole d'établissement de clés WPA3-Personal utilise (acronyme seul, ex: psk) ?"
+  answer: "sae"
+  accepts: ["SAE"]
+- id: pmf
+  prompt: "Lettre de l'amendement 802.11 définissant les Protected Management Frames (PMF) ? Réponds par la lettre seule."
+  answer: "w"
+  accepts: ["11w", "802.11w"]
+- id: roam
+  prompt: "Lettre de l'amendement 802.11 assurant le Fast BSS Transition (roaming rapide, ex: k) ? Réponds par la lettre seule."
+  answer: "r"
+  accepts: ["11r", "802.11r"]

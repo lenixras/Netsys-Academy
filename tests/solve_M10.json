@@ -1,0 +1,20 @@
+{
+  "mon": [
+    "ip link set eth1 up",
+    "ip addr add 10.10.100.2/24 dev eth1",
+    "cat > /root/collect.py <<'PYEOF'\nimport socket\ns = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\ns.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\ns.bind((\"0.0.0.0\", 514))\nf = open(\"/root/syslog.log\", \"ab\", 0)\nwhile True:\n    f.write(s.recvfrom(2048)[0] + b\"\\n\")\nPYEOF",
+    "nohup python3 /root/collect.py > /dev/null 2>&1 < /dev/null &",
+    "sleep 2",
+    "ss -uln | grep -q ':514'"
+  ],
+  "agent": [
+    "ip link set eth1 up",
+    "ip addr add 10.10.100.1/24 dev eth1",
+    "cat > /root/snmpd.conf <<'CNFEOF'\nagentAddress udp:161\nrocommunity netsys\nsysLocation Labo M10 - salle reseau\nsysContact noc-netsys@lab10.local\nCNFEOF",
+    "snmpd -f -Lo -C -c /root/snmpd.conf > /root/snmpd.log 2>&1 < /dev/null &",
+    "sleep 2",
+    "pgrep -x snmpd",
+    "logger -n 10.10.100.2 -P 514 -t labo10 TESTMSG",
+    "logger -n 10.10.100.2 -P 514 -t labo10 lien observabilite operationnel"
+  ]
+}

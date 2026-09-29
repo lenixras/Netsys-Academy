@@ -1,0 +1,24 @@
+{
+  "lan": [
+    "ip link set eth1 up",
+    "ip addr add 10.10.110.10/24 dev eth1",
+    "ip route replace default via 10.10.110.1",
+    "nohup python3 -m http.server 80 > /dev/null 2>&1 < /dev/null &",
+    "sleep 1",
+    "ss -tln | grep -qE ':80[[:space:]]'"
+  ],
+  "fw": [
+    "ip link set eth1 up",
+    "ip link set eth2 up",
+    "ip addr add 10.10.110.1/24 dev eth1",
+    "ip addr add 10.10.120.1/24 dev eth2",
+    "sysctl -w net.ipv4.ip_forward=1",
+    "cat > /root/nft.rules <<'NFTEOF'\nflush ruleset\n\ntable inet filter {\n    chain input {\n        type filter hook input priority 0 ; policy drop ;\n        ct state established,related accept\n        iifname lo accept\n        iifname eth0 accept\n        iifname eth1 accept\n        iifname eth2 icmp type echo-request accept\n    }\n    chain forward {\n        type filter hook forward priority 0 ; policy drop ;\n        ct state established,related accept\n        iifname eth1 accept\n        iifname eth2 ip protocol icmp drop\n        iifname eth2 meta l4proto tcp tcp dport 80 accept\n    }\n    chain output {\n        type filter hook output priority 0 ; policy accept ;\n    }\n}\n\ntable ip nat {\n    chain prerouting {\n        type nat hook prerouting priority dstnat ; policy accept ;\n        iifname eth2 meta l4proto tcp tcp dport 8080 dnat to 10.10.110.10:80\n    }\n    chain postrouting {\n        type nat hook postrouting priority srcnat ; policy accept ;\n        ip saddr 10.10.110.0/24 oifname eth2 masquerade\n    }\n}\nNFTEOF",
+    "nft -f /root/nft.rules",
+    "nft list ruleset > /root/nft.conf.set"
+  ],
+  "wan": [
+    "ip link set eth1 up",
+    "ip addr add 10.10.120.20/24 dev eth1"
+  ]
+}

@@ -1,0 +1,55 @@
+questions:
+- q: 'Un DN dans LDAP, c''est :'
+  choices:
+  - Le mot de passe
+  - Le nom complet hiérarchique d'une entrée (uid=elev1,ou=People,dc=lab23,dc=local)
+  - Un fichier de log
+  - Un type d'index
+  answer: 1
+  points: 1
+  expl: Le DN identifie un objet ; il se lit de la feuille vers la racine de l'arbre.
+- q: Que définit une objectClass ?
+  choices:
+  - La machine physique
+  - L'ensemble des attributs obligatoires/autorisés d'une entrée
+  - Le port d'écoute
+  - La replication
+  answer: 1
+  points: 1
+  expl: 'La classe est un contrat : inetOrgPerson exige sn/cn, autorise uid, userPassword, mail...'
+- q: 'Le ''suffix'' dans slapd.conf :'
+  choices:
+  - Clôture les lignes LDIF
+  - Indique la racine de l'arbre que ce serveur sert
+  - Définit le mot de passe admin
+  - Filtre les recherches anonymes
+  answer: 1
+  points: 1
+  expl: Un backend = une base ; le suffixe est sa racine (dc=lab23,dc=local).
+- q: 'Avant de créer uid=elev1 avec objectClass inetOrgPerson, il faut :'
+  choices:
+  - Rebooter le serveur
+  - Inclure les schémas core, cosine et inetorgperson dans slapd.conf
+  - Activer le TLS
+  - Créer le DNS
+  answer: 1
+  points: 1
+  expl: Sans le schéma, l'attribut 'uid' est 'Undefined attribute type' — le piège classique.
+- q: 'Le bind dans LDAP correspond à :'
+  choices:
+  - La sauvegarde
+  - L'authentification du client (DN + mot de passe)
+  - Le partitionnement
+  - La création du fichier de log
+  answer: 1
+  points: 1
+  expl: On se présente avec -D (DN) et -w (mot de passe) ; 'Invalid credentials' = mauvais bind.
+- q: 'Le format des fichiers d''import LDAP :'
+  choices:
+  - CSV
+  - JSON
+  - LDIF
+  - YAML
+  answer: 2
+  points: 1
+  expl: 'LDIF = ligne ''dn:'' puis ''attribut: valeur'', entrées séparées par une ligne vide.'

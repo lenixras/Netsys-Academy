@@ -1,0 +1,91 @@
+questions:
+- q: "Sur quel port UDP un manager SNMP interroge-t-il un agent ?"
+  choices:
+    - "UDP 161"
+    - "UDP 162"
+    - "TCP 161"
+    - "UDP 514"
+  answer: 0
+  points: 1
+  expl: "Les requêtes du manager vers l'agent (GET, SET) circulent sur UDP 161 ; UDP 162 est réservé aux traps poussés par l'agent."
+- q: "Un trap SNMP est :"
+  choices:
+    - "une notification émise par l'agent vers le manager (UDP 162)"
+    - "une requête GET répétée par la sonde"
+    - "un compteur 64 bits"
+    - "un jeton d'authentification SNMPv3"
+  answer: 0
+  points: 1
+  expl: "Un trap est une notification émise spontanément par l'agent vers le manager, typiquement sur UDP 162, par opposition au polling initié par la sonde."
+- q: "L'OID 1.3.6.1.2.1 désigne :"
+  choices:
+    - "la MIB standard mib-2"
+    - "la MIB d'un éditeur"
+    - "la table des routes"
+    - "le sous-arbre des traps"
+  answer: 0
+  points: 1
+  expl: "Le préfixe 1.3.6.1.2.1 correspond à mib-2, la MIB standard (RFC 1213) ; les MIB éditeurs se trouvent sous 1.3.6.1.4.1 (enterprises)."
+- q: "Quelle commande parcourt une table MIB complète sans la connaître à l'avance ?"
+  choices:
+    - "snmpwalk (enchaînement de GETNEXT)"
+    - "snmpget"
+    - "snmpstatus"
+    - "snmptranslate"
+  answer: 0
+  points: 1
+  expl: "snmpwalk enchaîne des GETNEXT, qui renvoient l'objet suivant de l'arbre : on parcourt ainsi une table entière sans en connaître à l'avance les index."
+- q: "Par rapport à SNMP v2c, SNMP v3 apporte :"
+  choices:
+    - "l'authentification (HMAC) et le chiffrement (AES), par utilisateur"
+    - "les compteurs 64 bits"
+    - "l'opération GETBULK"
+    - "le transport obligatoire sur TCP"
+  answer: 0
+  points: 1
+  expl: "SNMP v3 ajoute la sécurité réelle (USM) : authentification HMAC et chiffrement AES gérés par utilisateur ; les compteurs 64 bits et GETBULK existent déjà en v2c."
+- q: "Pourquoi préférer ifHCInOctets à ifInOctets sur une liaison 10 Gbit/s ?"
+  choices:
+    - "le compteur 32 bits boucle bien avant l'intervalle de polling"
+    - "ifInOctets compte les paquets et non les octets"
+    - "ifHCInOctets est le seul supporté en v3"
+    - "les deux sont identiques, c'est un alias"
+  answer: 0
+  points: 1
+  expl: "Au-delà d'environ 1 Gbit/s un compteur 32 bits boucle plusieurs fois entre deux polls, ce qui fausse le calcul du débit ; ifHCInOctets (compteur 64 bits de l'ifXTable) évite cet artefact."
+- q: "Le principal défaut du transport syslog en UDP est :"
+  choices:
+    - "la perte possible de messages, sans accusé de réception"
+    - "l'absence de tout horodatage"
+    - "le nombre maximal de facilities"
+    - "la taille limitée du message à 128 octets"
+  answer: 0
+  points: 1
+  expl: "Syslog en UDP est non fiable : sans accusé de réception, un message perdu pendant une saturation n'est jamais retransmis, d'où l'intérêt de TCP ou TLS quand la perte est inacceptable."
+- q: "La priorité syslog <134> correspond à :"
+  choices:
+    - "facility local6, severity information"
+    - "facility kern, severity emerg"
+    - "une OID SNMP"
+    - "un port UDP"
+  answer: 0
+  points: 1
+  expl: "Le champ <PRI> se calcule comme facility multiplié par 8 plus la severity ; ici la severity information vaut 6 et la facility appartient au sous-arbre local (local6) réservé aux applications."
+- q: "sFlow se distingue de NetFlow parce qu'il :"
+  choices:
+    - "échantillonne les paquets (1 sur N) au lieu de tenir une table de flux complète"
+    - "ne fonctionne que sur les hôtes Linux"
+    - "transporte les journaux en TLS"
+    - "remplace SNMP pour l'état des interfaces"
+  answer: 0
+  points: 1
+  expl: "sFlow procède par échantillonnage (1 paquet sur N plus des mesures de compteur), là où NetFlow tient une table exhaustive des flux, bien plus coûteuse en CPU et mémoire sur un coeur 100 Gbit/s."
+- q: "Exposer une métrique métier (sortie d'un script) via un agent net-snmp se fait avec :"
+  choices:
+    - "les directives extend ou pass du fichier snmpd.conf"
+    - "la directive rocommunity"
+    - "un trap orienté UDP 161"
+    - "un GETNEXT sur sysUpTime"
+  answer: 0
+  points: 1
+  expl: "Les directives extend et pass de snmpd.conf exécutent un script et exposent sa sortie sous une OID personnalisée, sans écrire de sous-agent ; rocommunity ne fait que définir la communauté de lecture."

@@ -1,0 +1,7 @@
+{
+  "dev2": [
+    "echo bmFtZTogbTE2LWRlc2lnbgp0b3BvbG9neToKICBub2RlczoKICAgIHIxOgogICAgICBraW5kOiBsaW51eAogICAgICBpbWFnZTogbmV0c3lzL2xhYm5vZGU6MgogICAgcjI6CiAgICAgIGtpbmQ6IGxpbnV4CiAgICAgIGltYWdlOiBuZXRzeXMvbGFibm9kZToyCiAgICByMzoKICAgICAga2luZDogbGludXgKICAgICAgaW1hZ2U6IG5ldHN5cy9sYWJub2RlOjIKICAgIHN3MToKICAgICAga2luZDogbGludXgKICAgICAgaW1hZ2U6IG5ldHN5cy9sYWJub2RlOjIKICBsaW5rczoKICAgIC0gZW5kcG9pbnRzOiBbInIxOmV0aDEiLCAicjI6ZXRoMSJdCiAgICAtIGVuZHBvaW50czogWyJyMjpldGgyIiwgInIzOmV0aDEiXQogICAgLSBlbmRwb2ludHM6IFsicjE6ZXRoMiIsICJzdzE6ZXRoMSJdCiAgICAtIGVuZHBvaW50czogWyJyMzpldGgyIiwgInN3MTpldGgyIl0K | base64 -d > /root/lab/topo.yaml",
+    "python3 /root/lab/lint.py /root/lab/topo.yaml",
+    "git -C /root/lab add -A; git -C /root/lab diff --cached --quiet || git -C /root/lab commit -q -m 'fix topo'"
+  ]
+}

@@ -1,0 +1,18 @@
+name: m16-design
+topology:
+  nodes:
+    r1:
+      kind: linux
+      image: netsys/labnode:2
+    r2:
+      kind: linux
+    r3:
+      kind: linux
+      image: netsys/labnode:2
+    sw1:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    - endpoints: ["r1:eth1", "r2:eth1"]
+    - endpoints: ["r2:eth2", "r9:eth9"]
+    - endpoints: ["r1:eth1", "r1:eth1"]

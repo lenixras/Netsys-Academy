@@ -1,0 +1,61 @@
+checks:
+- id: vlan_filtering_sw1
+  node: sw1
+  cmd: cat /sys/class/net/br0/bridge/vlan_filtering
+  expect: "1"
+  points: 1
+  hint: "Sur sw1, le pont br0 doit exister et filtrer les VLAN : cree-le (ip link add name br0 type bridge), mets les ports eth1 a eth4 dessus (ip link set ethX master br0), monte br0, puis active le filtrage avec ip link set dev br0 type bridge vlan_filtering 1 (etape 2)."
+- id: vlan_filtering_sw2
+  node: sw2
+  cmd: cat /sys/class/net/br0/bridge/vlan_filtering
+  expect: "1"
+  points: 1
+  hint: "Meme geste que sw1 mais sur sw2 : creer br0 (ip link add name br0 type bridge), y ajouter eth1 a eth4 comme ports (ip link set ethX master br0), monter le pont, puis ip link set dev br0 type bridge vlan_filtering 1 (etape 2)."
+- id: access_h1_vlan10
+  node: sw1
+  cmd: bridge vlan show dev eth3 | tr -d '\t'
+  expect: "eth3 +10 +PVID +Egress Untagged"
+  points: 1
+  hint: "eth3 de sw1 (le port de h1) doit etre un port access du VLAN 10 : bridge vlan add dev eth3 vid 10 pvid untagged, puis retirer le VLAN 1 par defaut avec bridge vlan del dev eth3 vid 1. Le +Egress Untagged prouve que les trames sortent sans tag pour l'hote (etape 2)."
+- id: access_h2_vlan20
+  node: sw2
+  cmd: bridge vlan show dev eth3 | tr -d '\t'
+  expect: "eth3 +20 +PVID +Egress Untagged"
+  points: 1
+  hint: "eth3 de sw2 (le port de h2) doit etre un port access du VLAN 20 : bridge vlan add dev eth3 vid 20 pvid untagged puis bridge vlan del dev eth3 vid 1. N'oublie pas le del vid 1, sinon le port reste aussi dans le VLAN 1 (etape 2)."
+- id: trunk_sw1_tagged_10_20
+  node: sw1
+  cmd: bridge -j vlan show dev eth1 | jq -c '[.[]|.vlans[]?|select((.flags//[])|index("Untagged")|not)|.vlan]|sort|del(.[]|select(.==1))'
+  expect: "\\[10, *20\\]|\\[20, *10\\]"
+  points: 1
+  hint: "eth1 de sw1 est un trunk vers sw2 : il doit porter les VLAN 10 et 20 TAGGUES (commande bridge vlan add SANS pvid ni untagged). Applique for p in eth1 eth2; do bridge vlan add dev $p vid 10 && bridge vlan add dev $p vid 20; done puis controle avec bridge -j vlan show dev eth1 (etape 2)."
+- id: trunk_r1_side_tagged
+  node: sw1
+  cmd: bridge -j vlan show dev eth4 | jq -c '[.[]|.vlans[]?|select((.flags//[])|index("Untagged")|not)|.vlan]|sort|del(.[]|select(.==1))'
+  expect: "\\[10, *20\\]|\\[20, *10\\]"
+  points: 1
+  hint: "eth4 de sw1 porte le trafic vers r1 : ce doit etre un trunk avec les VLAN 10 et 20 TAGGUES, comme les ports vers sw2 : bridge vlan add dev eth4 vid 10 && bridge vlan add dev eth4 vid 20 (sans untagged, c'est r1 qui lit les tags sur eth1.10/eth1.20, etape 2 et 4)."
+- id: stp_root_sw1
+  node: sw1
+  cmd: cat /sys/class/net/br0/bridge/priority
+  expect: "^0x40|4096"
+  points: 1
+  hint: "sw1 doit etre la racine spanning-tree : la priorite de br0 doit passer a 4096 (plus petit que le defaut 32768). Lance sur sw1 ip link set dev br0 type bridge stp_state 1 priority 4096 : les deux arguments sont necessaires, STP active + priorite (etape 3)."
+- id: stp_loop_blocked
+  node: sw2
+  cmd: bridge link show | grep -E 'state (1|2|blocking|discarding)'
+  expect: "eth[12]"
+  points: 1
+  hint: "STP n'est pas actif sur sw2, ou n'a pas encore converge : lance ip link set dev br0 type bridge stp_state 1 sur sw2 (la racine est sw1, priorite 4096) puis patiente ~30 s de convergence. Un des ports en boucle (eth1 ou eth2) doit passer en state discarding : surveille avec watch -n5 bridge link show (etape 3)."
+- id: ping_intra_vlan
+  node: h1
+  cmd: ping -c2 -W1 10.10.0.3
+  expect: "0% packet loss"
+  points: 1
+  hint: "h1 (10.10.0.2) doit joindre h3 (10.10.0.3) dans le meme VLAN 10, via le trunk sw1-sw2 : verifie les IP sur les hotes (etape 1), l'access VLAN 10 sur eth3 de sw1 ET sur eth4 de sw2, et le VLAN 10 taggue sur les trunk eth1/eth2 des deux switches (etape 2)."
+- id: ping_inter_vlan
+  node: h1
+  cmd: ping -c2 -W1 10.20.0.2
+  expect: "0% packet loss"
+  points: 1
+  hint: "Ce ping traverse le routeur r1 (router-on-a-stick) : il faut la passerelle par defaut 10.10.0.1 sur h1 (etape 1), les sous-interfaces eth1.10 (10.10.0.1/24) et eth1.20 (10.20.0.1/24) creees et montees sur r1, ip_forward actif (etape 4), et le trunk taggue 10+20 sur eth4 de sw1. h2 doit aussi avoir son IP 10.20.0.2/24 et sa passerelle 10.20.0.1."

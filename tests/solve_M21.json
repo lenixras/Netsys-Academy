@@ -1,0 +1,8 @@
+{
+ "r1": [
+  "vtysh -c 'conf t' -c 'router bgp 64512' -c 'no bgp ebgp-requires-policy' -c 'neighbor 10.0.21.2 remote-as 64513' -c 'address-family ipv4 unicast' -c 'network 10.21.1.0/24' -c 'end'"
+ ],
+ "r2": [
+  "vtysh -c 'conf t' -c 'router bgp 64513' -c 'no bgp ebgp-requires-policy' -c 'neighbor 10.0.21.1 remote-as 64512' -c 'address-family ipv4 unicast' -c 'network 10.21.2.0/24' -c 'end'"
+ ]
+}

@@ -1,0 +1,17 @@
+---
+- name: Base systeme cible
+  hosts: all
+  remote_user: root
+  tasks:
+    - name: Creer le service account svcapp
+      ansible.builtin.user:
+        name: svcapp
+        system: true
+        shell: /usr/sbin/nologin
+        create_home: false
+
+    - name: Ecrire /etc/motd
+      ansible.builtin.copy:
+        dest: /etc/motd
+        content: "Managed by Ansible\n"
+        mode: "0644"

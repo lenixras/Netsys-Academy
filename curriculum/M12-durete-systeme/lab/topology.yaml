@@ -1,0 +1,9 @@
+name: m12-hard
+mgmt:
+  network: clab-m12
+  ipv4-subnet: 10.198.15.0/24
+topology:
+  nodes:
+    host1:
+      kind: linux
+      image: netsys/labnode:2

@@ -1,0 +1,19 @@
+id: M0
+title: "Comment marche Internet"
+wave: 0
+prereqs: []
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 30
+  setup:
+    - node: h1
+      cmd: mkdir -p /root/obs
+    - node: h1
+      cmd: echo $(ip -4 -o addr show dev eth0 | awk '{print $4}' | cut -d/ -f1) atelier.m0.internal >> /etc/hosts
+validation:
+  quiz_min_score: 70
+  lab_required: false

@@ -1,0 +1,31 @@
+checks:
+- id: ping_connectivity
+  node: h1
+  cmd: ping -c2 -W2 10.10.20.10
+  expect: "0% packet loss"
+  points: 2
+  hint: "Avant l'impairment, h1 doit deja joindre h2 : verifie les adresses du plan (h1 10.10.10.10/24 via 10.10.10.1 ; r1 eth1 10.10.10.1/24 et eth2 10.99.0.1/30 ; r2 eth1 10.99.0.2/30 et eth2 10.10.20.1/24 ; h2 10.10.20.10/24 via 10.10.20.1), le sysctl -w net.ipv4.ip_forward=1 sur r1 et r2, et les routes statiques croisees entre les deux routeurs (etape 1)."
+- id: netem_configured
+  node: r1
+  cmd: tc qdisc show dev eth2
+  expect: "netem.*delay 50ms.*loss 2%|netem.*loss 2%.*delay 50ms"
+  points: 2
+  hint: "netem doit etre configure sur l'interface WAN de r1, pas ailleurs : tc qdisc add dev eth2 root netem delay 50ms loss 2%. Verifie avec tc qdisc show dev eth2 depuis r1 ; pour repartir proprement si la ligne est fausse, tc qdisc del dev eth2 root puis relance la commande (etape 3)."
+- id: rtt_elevated
+  node: h1
+  cmd: ping -c3 -W2 10.10.20.10 | grep -o 'time=[0-9.]*' | tail -1
+  expect: "time=(4[5-9]|[5-9][0-9]|[0-9]{3,})"
+  points: 2
+  hint: "Le RTT mesure depuis h1 doit refleter les 50 ms de latence : ping -c3 10.10.20.10 doit rendre time= superieur a 45 ms. Si tu vois encore quelques ms, c'est que netem n'est pas en place sur eth2 de r1 (etape 3) ou que le trafic ne traverse pas r1 (verifie les routes et la passerelle, etape 1)."
+- id: iperf3_server_up
+  node: h2
+  cmd: ss -tln
+  expect: ":5201"
+  points: 1
+  hint: "Le serveur iperf3 doit ecouter en TCP sur le port 5201 de h2 : lance iperf3 -s -D sur h2 (l'option -D le detache en tache de fond) puis verifie avec ss -tln | grep 5201 (etape 2)."
+- id: throughput_degraded
+  node: h1
+  cmd: iperf3 -c 10.10.20.10 -t 5 | grep 'Mbits/sec' | tail -1
+  expect: '[ ][0-9]{1,2}(\.[0-9])? Mbits/sec'
+  points: 3
+  hint: "Le debit attendu est effondre, a deux chiffres en Mbits/sec (sous 100 Mbit/s) : c'est la signature des retransmissions TCP provoquees par les 2% de perte. Si la mesure echoue ou reste tres haute, verifie que le serveur tourne sur h2 (iperf3 -s -D, etape 2) et que netem delay 50ms loss 2% est bien sur eth2 de r1 (etape 3), puis relance iperf3 -c 10.10.20.10 -t 5 depuis h1."

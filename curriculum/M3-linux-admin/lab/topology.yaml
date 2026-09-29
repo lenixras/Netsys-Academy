@@ -1,0 +1,13 @@
+name: m3-admin
+mgmt:
+  network: clab-m3
+  ipv4-subnet: 10.198.11.0/24
+topology:
+  nodes:
+    admin1:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    # câble en boucle sur le nœud lui-même : eth1 <-> eth2
+    # (permet à eth1 d'exister sans second nœud)
+    - endpoints: ["admin1:eth1", "admin1:eth2"]

@@ -1,0 +1,91 @@
+questions:
+- q: "Quel protocole résout un nom en adresse IP ?"
+  choices:
+    - "DNS"
+    - "NTP"
+    - "DHCP"
+    - "SNMP"
+  answer: 0
+  points: 1
+  expl: "DNS est le service qui traduit un nom en adresse IP ; NTP synchronise l'horloge, DHCP attribue les adresses et SNMP sert à la supervision."
+- q: "Le NAT (NAPT) permet principalement de :"
+  choices:
+    - "traduire des adresses privées en adresses publiques en réutilisant les ports"
+    - "chiffrer le trafic entre client et serveur"
+    - "accélérer la résolution DNS"
+    - "allouer des adresses fixes aux serveurs"
+  answer: 0
+  points: 1
+  expl: "NAPT distingue les flux grâce aux ports : plusieurs machines privées peuvent ainsi partager une seule adresse publique. Il ne chiffre rien du tout."
+- q: "Quelle plage d'adresses est réservée privée par la RFC 1918 ?"
+  choices:
+    - "10.0.0.0/8"
+    - "8.8.8.0/24"
+    - "172.32.0.0/16"
+    - "169.254.0.0/16"
+  answer: 0
+  points: 1
+  expl: "La RFC 1918 réserve 10.0.0.0/8, 172.16.0.0/12 et 192.168.0.0/16 ; 172.32 est routable publiquement et 169.254 correspond à l'auto-attribution APIPA."
+- q: "Un client HTTPS parle à un serveur sur le port :"
+  choices:
+    - "443 en TCP"
+    - "80 en UDP"
+    - "53 en TCP"
+    - "22 en TCP"
+  answer: 0
+  points: 1
+  expl: "HTTPS est du HTTP chiffré par TLS, transporté en TCP sur le port 443 par défaut ; le port 80 correspond à HTTP en clair."
+- q: "Une adresse en 169.254.x.x sur une machine signale généralement :"
+  choices:
+    - "un échec DHCP (auto-attribution APIPA)"
+    - "une adresse publique fournie par l'ISP"
+    - "un conflit d'adresses résolu"
+    - "une connexion VPN active"
+  answer: 0
+  points: 1
+  expl: "Quand aucun serveur DHCP ne répond, le client s'auto-attribue une adresse link-local 169.254.0.0/16 (APIPA), signe typique d'une panne DHCP."
+- q: "ping 8.8.8.8 fonctionne mais ping exemple.fr échoue. La panne est probablement :"
+  choices:
+    - "au niveau du DNS"
+    - "au niveau du câble réseau"
+    - "sur le routeur par défaut"
+    - "liée au MTU"
+  answer: 0
+  points: 1
+  expl: "Si l'adresse IP directe répond, la connectivité réseau est bonne : seul le nom n'est pas résolu, la panne est donc du côté du DNS."
+- q: "traceroute explore le chemin en jouant sur :"
+  choices:
+    - "la TTL des paquets IP"
+    - "le numéro de port source"
+    - "la taille du MTU"
+    - "les baux DHCP"
+  answer: 0
+  points: 1
+  expl: "traceroute envoie des paquets avec une TTL croissante ; chaque routeur qui épuise la TTL renvoie un ICMP « Time Exceeded » et révèle ainsi le chemin."
+- q: "Dans le modèle client/serveur web, le serveur :"
+  choices:
+    - "écoute en permanence sur un port connu"
+    - "initie toujours la connexion vers le client"
+    - "ne répond qu'après un ARP gratuit"
+    - "utilise uniquement UDP"
+  answer: 0
+  points: 1
+  expl: "Le serveur attend les connexions en écoute permanente sur un port connu (443 ou 80) ; c'est toujours le client qui initie la connexion TCP."
+- q: "Un enregistrement DNS CNAME sert à :"
+  choices:
+    - "créer un alias vers un autre nom"
+    - "lier un nom à une IPv6"
+    - "désigner le serveur mail du domaine"
+    - "stocker la clé TLS du serveur"
+  answer: 0
+  points: 1
+  expl: "Un CNAME est un alias : il fait pointer un nom vers un autre nom, qui sera ensuite résolu par son enregistrement A ou AAAA ; l'AAAA porte l'IPv6 et le MX le mail."
+- q: "Quelle commande affiche la route par défaut sur Linux ?"
+  choices:
+    - "ip route show"
+    - "ss -tunap"
+    - "dig +trace"
+    - "resolvectl status"
+  answer: 0
+  points: 1
+  expl: "ip route show affiche la table de routage, dont la ligne « default via ... » ; ss liste les sockets, dig interroge le DNS."

@@ -1,0 +1,23 @@
+checks:
+- id: r2_eth1_state_up
+  node: r2
+  cmd: "ip link show dev eth1 | grep -q 'state UP'"
+  points: 2
+  hint: "L'interface eth1 de r2 (10.13.2.2 cote r1) n'est pas UP : c'est une panne de couche 1-2. Regarde l'etat de toutes les interfaces avec ip -br link, repare avec ip link set eth1 up sur r2, puis teste le ping vers ton voisin direct 10.13.2.1."
+- id: h2_prefix_24
+  node: h2
+  cmd: "ip -4 addr show dev eth1 | grep -q 'inet 10.13.3.20/24'"
+  points: 2
+  hint: "L'adresse de h2 sur eth1 n'est pas 10.13.3.20/24 : verifie le MASQUE, pas seulement l'adresse (ip -4 addr show dev eth1). Un /25 casse la route vers le reste du /24 sans generer d'erreur. Corrige avec ip addr flush dev eth1 && ip addr add 10.13.3.20/24 dev eth1 et remets la route par defaut via 10.13.3.1."
+- id: r1_route_to_10_13_3
+  node: r1
+  cmd: ip route get 10.13.3.20
+  expect: via 10.13.2.2
+  points: 2
+  hint: "Sur r1, la destination 10.13.3.20 n'est pas routee via 10.13.2.2. Interroge la FIB sans ambiguite : ip route get 10.13.3.20. Cherche une interception avec ip route show type blackhole (elle fait disparaitre le trafic sans message d'erreur), supprime-la (ip route del blackhole 10.13.3.0/24) puis recree la route statique documentee : ip route add 10.13.3.0/24 via 10.13.2.2."
+- id: h1_ping_h2_end_to_end
+  node: h1
+  cmd: ping -c4 -W2 10.13.3.20
+  expect: 0% packet loss
+  points: 4
+  hint: "Le ping de bout en bout echoue encore : il y a plusieurs pannes simultannees, on ne repare pas tout d'un coup. Depuis h1, decoupe le chemin hop par hop : ping -c2 10.13.1.1 (passerelle), puis 10.13.2.2, puis 10.13.3.1, enfin 10.13.3.20. Le premier saut muet te donne la zone de panne ; tracepath 10.13.3.20 aide aussi."

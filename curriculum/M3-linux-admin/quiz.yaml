@@ -1,0 +1,91 @@
+questions:
+- q: "Que contient le fichier /etc/passwd ?"
+  choices:
+    - "Les mots de passe chiffrés des utilisateurs"
+    - "Les comptes système : nom, UID, GID, home, shell (jamais le mot de passe)"
+    - "Uniquement les utilisateurs connectés"
+    - "La liste des groupes et leurs membres"
+  answer: 1
+  points: 1
+  expl: "/etc/passwd est lisible par tous et décrit les comptes (nom, UID, GID, home, shell) ; les mots de passe n'y figurent jamais, ils sont hachés dans /etc/shadow."
+- q: "L'option `-u 1500` de useradd sert à :"
+  choices:
+    - "définir le shell de l'utilisateur"
+    - "créer le répertoire home"
+    - "imposer l'UID du compte"
+    - "ajouter l'utilisateur au groupe 1500"
+  answer: 2
+  points: 1
+  expl: "-u impose l'UID du nouveau compte (utile pour retrouver le même UID sur plusieurs machines) ; le shell se définit avec -s et le groupe principal avec -g."
+- q: "Où sont stockés les hachages de mots de passe sous Linux ?"
+  choices:
+    - "Dans /etc/shadow"
+    - "Dans /etc/passwd"
+    - "Dans /var/run/login"
+    - "Dans /etc/group"
+  answer: 0
+  points: 1
+  expl: "Les hachages vivent dans /etc/shadow, protégé en lecture pour root seulement ; /etc/passwd restant lisible par tous, on n'y met rien de sensible."
+- q: "`usermod -aG staff devops` :"
+  choices:
+    - "remplace le groupe principal de devops par staff"
+    - "ajoute staff aux groupes secondaires de devops sans écraser les autres"
+    - "supprime devops du groupe staff"
+    - "renomme le groupe staff"
+  answer: 1
+  points: 1
+  expl: "Sans -a (append), -G écraserait toute la liste des groupes secondaires et ferait perdre les appartenances existantes ; -aG ajoute staff en conservant le reste."
+- q: "Que montre la commande `id devops` ?"
+  choices:
+    - "Les fichiers possédés par devops"
+    - "Les processus de devops"
+    - "La dernière connexion de devops"
+    - "UID, GID principal et groupes de devops"
+  answer: 3
+  points: 1
+  expl: "id affiche l'UID, le GID principal (gid=) et tous les groupes d'un utilisateur ; c'est le moyen rapide de vérifier une appartenance à un groupe."
+- q: "Contrairement à ifconfig, `ip addr add 10.0.0.5/24 dev eth1` :"
+  choices:
+    - "ajoute l'adresse sans supprimer les adresses déjà présentes"
+    - "nécessite un redémarrage du service réseau"
+    - "remplace toutes les adresses de eth1"
+    - "ne fonctionne que sur eth0"
+  answer: 0
+  points: 1
+  expl: "ip addr add ajoute une adresse tout en conservant celles déjà configurées ; l'ancien ifconfig, lui, remplace la configuration de l'interface."
+- q: "`ss -tln` affiche :"
+  choices:
+    - "toutes les connexions du système"
+    - "les sockets TCP en écoute, en format numérique"
+    - "les tables de routage TCP"
+    - "les interfaces avec leur IP"
+  answer: 1
+  points: 1
+  expl: "-t limite au TCP, -l aux sockets en écoute (listening) et -n affiche chiffres et adresses brutes sans résolution DNS ; pratique pour voir quels services écoutent."
+- q: "`sysctl -w net.ipv4.ip_forward=1` :"
+  choices:
+    - "modifie /etc/sysctl.conf automatiquement"
+    - "nécessite de redémarrer le service systemd-networkd"
+    - "applique la valeur immédiatement, mais de façon non persistante"
+    - "active le pare-feu"
+  answer: 2
+  points: 1
+  expl: "-w écrit la valeur dans /proc/sys, effective immédiatement mais perdue au redémarrage ; pour persister il faut l'ajouter à /etc/sysctl.conf ou un fichier de /etc/sysctl.d/."
+- q: "Dans un conteneur sans systemd, pour lire les logs d'un service on peut :"
+  choices:
+    - "utiliser journalctl -fu ssh"
+    - "compter sur /var/log qui se remplit tout seul"
+    - "activer systemctl start rsyslog"
+    - "rediriger la sortie du processus vers un fichier dans /var/log"
+  answer: 3
+  points: 1
+  expl: "Sans systemd il n'y a pas de journal ni de systemctl : le plus simple est de lancer le service en redirigeant stdout/stderr (par exemple 2>&1 >> fichier) vers un fichier de log."
+- q: "Netplan (sur Ubuntu) sert à :"
+  choices:
+    - "traduire une configuration YAML en config pour systemd-networkd ou NetworkManager"
+    - "remplacer complètement iptables/nftables"
+    - "gérer les paquets réseau"
+    - "afficher les statistiques d'interfaces"
+  answer: 0
+  points: 1
+  expl: "Netplan lit un fichier YAML dans /etc/netplan et génère la configuration réelle du backend choisi (systemd-networkd ou NetworkManager), puis l'applique via netplan apply."

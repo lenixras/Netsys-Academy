@@ -1,0 +1,14 @@
+id: M9
+title: "Wi-Fi — plan d'implantation"
+wave: 2
+prereqs: [M1, M5]
+status: full
+lab:
+  mode: drills
+  dir: lab
+  checks: check.py
+  problems: problems.yaml
+  ttl_min: 45
+validation:
+  quiz_min_score: 70
+  lab_required: true

@@ -1,0 +1,34 @@
+name: m5-vlan
+mgmt:
+  network: clab-m5
+  ipv4-subnet: 10.198.5.0/24
+topology:
+  nodes:
+    sw1:
+      kind: linux
+      image: netsys/labnode:1
+    sw2:
+      kind: linux
+      image: netsys/labnode:1
+    r1:
+      kind: linux
+      image: netsys/labnode:1
+    h1:
+      kind: linux
+      image: netsys/labnode:1
+    h2:
+      kind: linux
+      image: netsys/labnode:1
+    h3:
+      kind: linux
+      image: netsys/labnode:1
+  links:
+    # boucle rouge entre les switches (STP)
+    - endpoints: ["sw1:eth1", "sw2:eth1"]
+    - endpoints: ["sw1:eth2", "sw2:eth2"]
+    # hôtes
+    - endpoints: ["sw1:eth3", "h1:eth1"]
+    - endpoints: ["sw2:eth3", "h2:eth1"]
+    - endpoints: ["sw2:eth4", "h3:eth1"]
+    # routeur inter-VLAN ( trunk )
+    - endpoints: ["sw1:eth4", "r1:eth1"]

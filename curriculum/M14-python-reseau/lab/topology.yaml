@@ -1,0 +1,9 @@
+name: m14-py
+mgmt:
+  network: clab-m14
+  ipv4-subnet: 10.198.17.0/24
+topology:
+  nodes:
+    dev:
+      kind: linux
+      image: netsys/labnode:2

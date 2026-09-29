@@ -1,0 +1,55 @@
+questions:
+- q: Que fait la commande Cisco 'encapsulation dot1Q 10' sur une sous-interface ?
+  choices:
+  - Elle allume le port
+  - Elle attache les trames de cette sous-interface au VLAN 802.1Q 10
+  - Elle chiffre le trafic
+  - Elle crée un route statique
+  answer: 1
+  points: 1
+  expl: Le tag 802.1Q identifie le VLAN dans la trame ; la sous-interface n'émet/accepte que les trames taguées avec ce VLAN.
+- q: 'Un lien ''trunk'' entre un switch et un routeur sert à :'
+  choices:
+  - Augmenter le débit
+  - Transporter plusieurs VLANs sur un seul câble physique
+  - Isoler le management
+  - Faire du LACP
+  answer: 1
+  points: 1
+  expl: Le trunk porte les trames taguées de chaque VLAN, ce qui permet le 'router on a stick' avec un seul câble.
+- q: Quelle commande FRR sauvegarde la config au démarrage, comme 'copy run start' ?
+  choices:
+  - write memory
+  - save /e
+  - copy startup running
+  - commit
+  answer: 0
+  points: 1
+  expl: vtysh 'write memory' (alias copy running-config startup-config) écrit /etc/frr/frr.conf.
+- q: Pourquoi le routeur a-t-il besoin de 'ip link add eth1.10 link eth1 type vlan id 10' AVANT la config vtysh ?
+  choices:
+  - C'est décoratif
+  - 'FRR ne crée pas le dispositif réseau du noyau : l''interface doit exister dans Linux'
+  - Sinon le switch ne répond pas
+  - Pour activer le DHCP
+  answer: 1
+  points: 1
+  expl: 'FRR est un daemon de routage : il configure ce que le noyau expose. La sous-interface 802.1Q est un objet du noyau Linux.'
+- q: h1 (VLAN 10) veut joindre h2 (VLAN 20). Qui fait le routage ?
+  choices:
+  - Le switch, toujours
+  - La passerelle L3 (le routeur) sur l'adresse du VLAN de h1
+  - h2 directement
+  - Personne, c'est impossible
+  answer: 1
+  points: 1
+  expl: Le trafic passe par la default gw de h1, c'est-à-dire l'adresse .254 du VLAN 10 sur le routeur, qui relaye vers le VLAN 20.
+- q: Quel équivalent Cisco de 'no shutdown' est juste ici ?
+  choices:
+  - ip link set up
+  - Le port FRR monte dès que l'interface Linux correspondante est up
+  - interface vlan
+  - carrier detect
+  answer: 1
+  points: 1
+  expl: 'FRR n''éteint pas d''interface : l''état vient de Linux ; ''no shutdown'' côté IOS agit sur le port lui-même.'

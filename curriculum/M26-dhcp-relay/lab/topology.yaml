@@ -1,0 +1,22 @@
+name: m26-dhcp-relay
+mgmt:
+  network: clab-m26
+  ipv4-subnet: 10.198.34.0/24
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netsys/labnode:3
+    rtr:
+      kind: linux
+      image: netsys/labnode:3
+    cli:
+      kind: linux
+      image: netsys/labnode:3
+  links:
+  - endpoints:
+    - cli:eth1
+    - rtr:eth1
+  - endpoints:
+    - rtr:eth2
+    - srv:eth1

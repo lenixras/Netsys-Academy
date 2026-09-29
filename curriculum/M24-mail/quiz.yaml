@@ -1,0 +1,55 @@
+questions:
+- q: 'SMTP sert à :'
+  choices:
+  - Lire ses mails
+  - Transférer/remettre un message entre serveurs et vers la boîte
+  - Resolver le MX
+  - Chiffrer le sujet
+  answer: 1
+  points: 1
+  expl: SMTP = remise ; la lecture côté client se fait par IMAP (ou POP3).
+- q: 'mydestination dans Postfix liste :'
+  choices:
+  - Les clients autorisés à envoyer
+  - Les domaines dont ce serveur est la destination finale
+  - Les MX de secours
+  - Les dossiers IMAP
+  answer: 1
+  points: 1
+  expl: Un message pour un domaine hors mydestination sera refusé (relais non autorisé).
+- q: 'Un serveur postfix ouvert en relais (mynetworks = 0.0.0.0/0) :'
+  choices:
+  - Est plus rapide
+  - Accepte de re-router le spam du monde entier — blacklist immédiate
+  - Bloque les spams
+  - Chiffre pour les clients
+  answer: 1
+  points: 1
+  expl: 'Le ''open relay'' est la faute historique n°1 : on limite l''acceptation au réseau local ou authentifié.'
+- q: 'Dovecot, c''est le serveur :'
+  choices:
+  - SMTP sortant
+  - IMAP/POP — l'accès à la boîte pour les clients
+  - DNS des MX
+  - Filtre antispam uniquement
+  answer: 1
+  points: 1
+  expl: Dovecot expose les boîtes via IMAP/POP3 et s'occupe de l'authentification des lecteurs.
+- q: 'Le fichier /var/mail/alice en format mbox contient :'
+  choices:
+  - Les logs postfix
+  - Les messages de la boîte d'alice
+  - Les alias
+  - Les certificats
+  answer: 1
+  points: 1
+  expl: mbox = un fichier, des messages concaténés avec des lignes 'From ' — dovecot le lit tel quel.
+- q: Pourquoi le banner '220 mx...' vu par un client est utile au diagnostic ?
+  choices:
+  - Il contient les mails
+  - Il prouve que TCP:25 est joignable et le service vivant
+  - Il signe le message
+  - Il configure le DNS
+  answer: 1
+  points: 1
+  expl: 'Premier test de n''importe quel service réseau : la bannière initiale, avant toute commande du protocole.'

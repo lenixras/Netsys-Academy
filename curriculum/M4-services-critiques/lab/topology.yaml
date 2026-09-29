@@ -1,0 +1,24 @@
+name: m4-services
+mgmt:
+  network: clab-m4
+  ipv4-subnet: 10.198.12.0/24
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netsys/labnode:2
+    gw:
+      kind: linux
+      image: netsys/labnode:2
+    client1:
+      kind: linux
+      image: netsys/labnode:2
+    client2:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    # serveur des services critiques vers le routeur
+    - endpoints: ["srv:eth1", "gw:eth1"]
+    # deux LAN clients, un par interface du routeur
+    - endpoints: ["client1:eth1", "gw:eth2"]
+    - endpoints: ["client2:eth1", "gw:eth3"]

@@ -1,0 +1,10 @@
+{
+ "auth": [
+  "sed -i \"s/allow-transfer { none; };/allow-transfer { 10.22.1.2; };/\" /root/named.conf",
+  "pkill -x named; sleep 1; named -c /root/named.conf -g > /root/named.log 2>&1 &"
+ ],
+ "rec": [
+  "echo b3B0aW9ucyB7CiAgICBkaXJlY3RvcnkgIi92YXIvY2FjaGUvYmluZCI7CiAgICBsaXN0ZW4tb24gcG9ydCA1MyB7IGFueTsgfTsKICAgIGFsbG93LXF1ZXJ5IHsgYW55OyB9OwogICAgcmVjdXJzaW9uIHllczsKICAgIGFsbG93LXJlY3Vyc2lvbiB7IGFueTsgfTsKfTsKem9uZSAibGFiMjIubG9jYWwiIHsgdHlwZSBzbGF2ZTsgbWFzdGVycyB7IDEwLjIyLjEuMTsgfTsgZmlsZSAibGFiMjIubG9jYWwuc2xhdmUiOyB9Owp6b25lICIwLjIyLjEwLmluLWFkZHIuYXJwYSIgeyB0eXBlIHNsYXZlOyBtYXN0ZXJzIHsgMTAuMjIuMS4xOyB9OyBmaWxlICIwLjIyLjEwLnNsYXZlIjsgfTsK | base64 -d > /root/named.conf",
+  "named -c /root/named.conf -g > /root/named.log 2>&1 &"
+ ]
+}

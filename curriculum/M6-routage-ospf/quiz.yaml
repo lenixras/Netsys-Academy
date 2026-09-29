@@ -1,0 +1,46 @@
+questions:
+- q: "Dans quel état OSPF le voisinage est-il établi et la LSDB synchronisée ?"
+  choices:
+    - "Full"
+    - "Init"
+    - "2-Way"
+    - "Loading"
+  answer: 0
+  points: 1
+  expl: "L'état Full signifie que les LSAs ont été entièrement échangés : les deux routeurs possèdent la même base LSDB et le voisinage est opérationnel ; Loading et 2-Way sont des étapes intermédiaires."
+- q: "Le coût OSPF par défaut sur un lien 100 Mbit (référence 100 Mbit/s) est :"
+  choices:
+    - "1"
+    - "10"
+    - "100"
+    - "0"
+  answer: 0
+  points: 1
+  expl: "Le coût = référence de bande passante divisée par le débit du lien : 100 Mbit/s / 100 Mbit/s = 1."
+- q: "La zone backbone OSPF s'appelle :"
+  choices:
+    - "0.0.0.0 (area 0)"
+    - "1.1.1.1"
+    - "root"
+    - "AS 0"
+  answer: 0
+  points: 1
+  expl: "La zone backbone est l'area 0 (0.0.0.0) : toutes les autres zones doivent y être rattachées, ce qui évite les boucles entre zones."
+- q: "La route par défaut statique se note :"
+  choices:
+    - "ip route 0.0.0.0/0 via <next-hop>"
+    - "ip route default dev lo"
+    - "ip route any 255.255.255.255"
+    - "ip default via 0.0.0.0"
+  answer: 0
+  points: 1
+  expl: "0.0.0.0/0 correspond au préfixe par défaut (toutes les destinations) et « via » indique l'adresse du next-hop à joindre ; lo est la boucle locale, à réserver au trafic de la machine elle-même."
+- q: "BGP est un protocole :"
+  choices:
+    - "à vecteur de chemins fondé sur les politiques"
+    - "lien-état interne à un AS uniquement"
+    - "de diffusion"
+    - "de résolution de noms"
+  answer: 0
+  points: 1
+  expl: "BGP est un path-vector utilisé entre AS (externes) : il choisit les routes selon des politiques (AS_PATH, attributs, communauté) plutôt que selon le seul plus court chemin ; lien-état interne décrit OSPF."

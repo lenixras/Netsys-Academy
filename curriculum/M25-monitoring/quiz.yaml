@@ -1,0 +1,55 @@
+questions:
+- q: 'Prometheus récupère les métriques en :'
+  choices:
+  - Push depuis les hôtes
+  - Scraping HTTP périodique vers /metrics
+  - Syslog
+  - SNMP uniquement
+  answer: 1
+  points: 1
+  expl: 'Modèle pull : le serveur sonde les cibles ; une cible en panne ne gêne que son propre état.'
+- q: Que mesure la métrique 'up' ?
+  choices:
+  - L'uptime
+  - Si le dernier scrape de la cible a réussi (1) ou non (0)
+  - La charge CPU
+  - Les baux DHCP
+  answer: 1
+  points: 1
+  expl: 'up{job=...} est le signal vital n°1 : 0 = cible injoignable, exporter HS ou erreur de config.'
+- q: 'node_exporter expose ses métriques sur :'
+  choices:
+  - Un fichier syslog
+  - HTTP /metrics (port 9100 par défaut)
+  - UDP 161
+  - SMTP
+  answer: 1
+  points: 1
+  expl: C'est un mini serveur HTTP qui sérialise les compteurs du système.
+- q: 'job_name dans prometheus.yml :'
+  choices:
+  - Identifie le job de scrape et étiquette les métriques (job=...)
+  - Choisit le port
+  - Fixe le TTL
+  - Active l'alerte
+  answer: 0
+  points: 1
+  expl: C'est le libellé 'job' ; d'où la requête up{job='tgt'}.
+- q: 'Le scrape_interval global sert à :'
+  choices:
+  - Nettoyer le stockage
+  - Fixer la fréquence de passage sur chaque cible
+  - Authentifier l'exporter
+  - Limiter les requêtes Grafana
+  answer: 1
+  points: 1
+  expl: Par défaut 1 min — en lab on le baisse (5 s) pour voir 'up' arriver vite.
+- q: Pourquoi un pull modèle aide-t-il en cas de panne réseau ?
+  choices:
+  - Les hôtes envoient en rafale
+  - Une cible injoignable produit simplement up=0 sans bloquer le serveur
+  - Les métriques sont locales
+  - Le DNS n'est pas requis
+  answer: 1
+  points: 1
+  expl: Le serveur ne dépend que de ses scrapeurs ; pas de flood ni de files d'attente côté clients.

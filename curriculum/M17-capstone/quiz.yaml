@@ -1,0 +1,91 @@
+questions:
+- q: "Un capstone réseau évalue surtout :"
+  choices:
+    - "la capacité à livrer une infrastructure complète et prouvée"
+    - "la récitation de RFC"
+    - "la vitesse de frappe en CLI"
+    - "le nombre d'écrans du plan"
+  answer: 0
+  points: 1
+  expl: "Un capstone valide la capacité à assembler et prouver une infrastructure complète (conception, configuration, tests, défense), pas la mémorisation de RFC ni la vitesse de frappe."
+- q: "Dans la chaîne de conception, le plan d'adressage précède :"
+  choices:
+    - "la génération des configs et l'écriture des tests"
+    - "la soutenance uniquement"
+    - "le quiz du module M0"
+    - "le choix du coloris des switches"
+  answer: 0
+  points: 1
+  expl: "Le plan d'adressage est une entrée de conception : il doit exister avant la génération automatique des configurations et l'écriture des tests qui s'y réfèrent."
+- q: "Un test de bout en bout d'un capstone vérifie typiquement :"
+  choices:
+    - "connectivité, services et politique de sécurité"
+    - "le style du code Python"
+    - "les badges Moodle"
+    - "la vitesse du lien Internet réel"
+  answer: 0
+  points: 1
+  expl: "Un test de bout en bout vérifie ce que vit l'utilisateur : la connectivité entre zones, les services rendus et l'application effective de la politique de sécurité."
+- q: "La source de vérité unique d'un projet automatisé (M15/M16) devrait être :"
+  choices:
+    - "le plan d'adressage/versionné dans le dépôt Git"
+    - "la table ARP du switch principal"
+    - "les notes personnelles de l'admin"
+    - "la sortie show run du dernier nœud configuré"
+  answer: 0
+  points: 1
+  expl: "Dans un projet automatisé la source de vérité unique est le dépôt Git versionné (inventaire, adressage) ; une table ARP ou un show run sont des états éphémères, pas une référence."
+- q: "Un VLAN sans DHCP relay dans un réseau multi-sites provoque :"
+  choices:
+    - "des clients de ce VLAN sans adresse (APIPA)"
+    - "une boucle de routage OSPF"
+    - "un échec de chiffrement TLS"
+    - "la saturation de la table conntrack"
+  answer: 0
+  points: 1
+  expl: "Sans DHCP relay (ip helper) les requêtes DHCP en broadcast ne franchissent pas le routeur : les clients du VLAN n'obtiennent pas de bail et finissent avec une adresse APIPA."
+- q: "Dans un dossier de capstone, une exigence non couverte par une preuve :"
+  choices:
+    - "ne peut pas être validée au barème"
+    - "est présumée conforme"
+    - "passe si le candidat l'affirme à l'oral"
+    - "est couverte par le quiz"
+  answer: 0
+  points: 1
+  expl: "Au barème une exigence n'est validée que si une preuve (configuration, sortie, test) l'atteste ; sans preuve elle reste non couverte."
+- q: "La redondance de liens entre deux switches (M5/M6) impose de traiter :"
+  choices:
+    - "les boucles L2 (STP) et le choix de chemin (coût/métrique)"
+    - "uniquement le MTU"
+    - "la sécurité WPA3"
+    - "la fréquence des traps SNMP"
+  answer: 0
+  points: 1
+  expl: "Redonder les liens entre switches introduit des boucles de couche 2 à bloquer par STP et pose la question du choix de chemin via les coûts et métriques de routage."
+- q: "L'épreuve d'incident injecté (barème) sert à vérifier :"
+  choices:
+    - "la méthode de dépannage structurée du candidat (M13)"
+    - "sa mémoire des commandes constructeur"
+    - "sa rapidité de frappe"
+    - "son respect du plan de canaux Wi-Fi"
+  answer: 0
+  points: 1
+  expl: "L'épreuve d'incident évalue la méthode de dépannage structurée (isoler, tester, conclure) bien plus que la mémoire brute des commandes ou la rapidité de frappe."
+- q: "Rejouer `deploy + checks` depuis le dépôt sur une machine neuve prouve :"
+  choices:
+    - "la reproductibilité du livrable (IaC, M16)"
+    - "la conformité RGPD"
+    - "la performance du lien"
+    - "la qualité de la soutenance"
+  answer: 0
+  points: 1
+  expl: "Rejouer deploy puis les checks depuis le dépôt sur une machine neuve démontre la reproductibilité du livrable, l'objectif central de l'infrastructure as code."
+- q: "Dans une soutenance, les limites connues du projet doivent être :"
+  choices:
+    - "écrites et défendues honnêtement"
+    - "cachées au jury"
+    - "attribuées à un outil"
+    - "compensées par plus de fonctionnalités"
+  answer: 0
+  points: 1
+  expl: "En soutenance, exposer honnêtement les limites connues et les risques associés est attendu ; les cacher ou les attribuer à un outil décrédibilise le travail."

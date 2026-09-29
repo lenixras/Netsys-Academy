@@ -1,0 +1,23 @@
+name: m13-trouble
+mgmt:
+  network: clab-m13
+  ipv4-subnet: 10.198.16.0/24
+topology:
+  nodes:
+    h1:
+      kind: linux
+      image: netsys/labnode:2
+    r1:
+      kind: linux
+      image: netsys/labnode:2
+    r2:
+      kind: linux
+      image: netsys/labnode:2
+    h2:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    # chaine : h1 - r1 - r2 - h2 (3 segments /24)
+    - endpoints: ["h1:eth1", "r1:eth1"]    # 10.13.1.0/24
+    - endpoints: ["r1:eth2", "r2:eth1"]    # 10.13.2.0/24
+    - endpoints: ["r2:eth2", "h2:eth1"]    # 10.13.3.0/24

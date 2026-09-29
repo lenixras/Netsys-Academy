@@ -1,0 +1,9 @@
+name: m0-observe
+mgmt:
+  network: clab-m0
+  ipv4-subnet: 10.198.8.0/24
+topology:
+  nodes:
+    h1:
+      kind: linux
+      image: netsys/labnode:2

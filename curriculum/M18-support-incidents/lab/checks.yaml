@@ -1,0 +1,30 @@
+checks:
+- id: web_server_up
+  node: srv
+  cmd: 'ss -tln | grep :80'
+  expect: ':80\s'
+  points: 1
+  hint: "Le serveur web ne tourne pas sur srv : depuis /root/www, lance-le en tache de fond avec cd /root/www && nohup python3 -m http.server 80 > /root/www.log 2>&1 & puis verifie ss -tln | grep :80 (etape 1)."
+- id: dns_zone_correct
+  node: srv
+  cmd: 'dig @10.18.0.10 web.intranet.lab18 +short'
+  expect: '10\.18\.0\.10'
+  points: 2
+  hint: "La zone intranet.lab18 pointe encore web vers l ancien serveur 10.18.0.99. Corrige l enregistrement A dans /root/db.intranet.lab18 (sed -i 's|web  IN  A  10.18.0.99|web  IN  A  10.18.0.10|' /root/db.intranet.lab18), augmente le serial, puis relance named : pkill -x named && named -c /root/named.conf -g > /root/named.log 2>&1 & (etape 2)."
+- id: dns_client_resolves
+  node: cli
+  cmd: 'getent hosts web.intranet.lab18'
+  expect: '10\.18\.0\.10'
+  points: 2
+  hint: "La machine cli interroge l ancien DNS 10.18.0.99 (config heritee de l ancienne infrastructure). Pointe /etc/resolv.conf vers le DNS qui repond vraiment : echo nameserver 10.18.0.10 > /etc/resolv.conf puis teste getent hosts web.intranet.lab18 (etape 3)."
+- id: dhcp_range_fixed
+  node: srv
+  cmd: 'dnsmasq --test --conf-file=/root/dnsmasq.conf && grep -E "dhcp-range=10\.18\.0\." /root/dnsmasq.conf'
+  points: 2
+  hint: "Le dhcp-range de /root/dnsmasq.conf est sur le mauvais sous-reseau (10.18.9.x) : les clients ne pourraient jamais obtenir une adresse dans 10.18.0.0/24. Remplace-le par dhcp-range=10.18.0.100,10.18.0.150,255.255.255.0,1h puis verifie avec dnsmasq --test --conf-file=/root/dnsmasq.conf (etape 4)."
+- id: intranet_e2e
+  node: cli
+  cmd: 'curl -sf http://web.intranet.lab18'
+  expect: 'OK'
+  points: 3
+  hint: "Le test de bout en bout combine tout : nom web.intranet.lab18 resolu par le DNS 10.18.0.10 vers 10.18.0.10, et serveur web qui repond. Si ca echoue, isole chaque maillon : dig @10.18.0.10 web.intranet.lab18 +short sur cli, curl -sf http://10.18.0.10 sur srv (etapes 1 a 3)."

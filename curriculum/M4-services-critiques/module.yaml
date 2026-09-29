@@ -1,0 +1,31 @@
+id: M4
+title: "Services critiques"
+wave: 1
+prereqs: ['M3']
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: srv
+    cmd: 'useradd -m -s /bin/bash svc || true'
+  - node: srv
+    cmd: 'install -d -m 700 -o svc -g svc /home/svc/.ssh && touch /home/svc/.ssh/authorized_keys && chown svc:svc /home/svc/.ssh/authorized_keys && chmod 600 /home/svc/.ssh/authorized_keys'
+  - node: srv
+    cmd: 'mkdir -p /run/sshd && ssh-keygen -A'
+  - node: srv
+    cmd: 'echo b3B0aW9ucyB7CiAgICBkaXJlY3RvcnkgIi92YXIvY2FjaGUvYmluZCI7CiAgICBsaXN0ZW4tb24gcG9ydCA1MyB7IGFueTsgfTsKICAgIGFsbG93LXF1ZXJ5IHsgYW55OyB9OwogICAgcmVjdXJzaW9uIG5vOwp9Owp6b25lICJsYWI0LmxvY2FsIiB7CiAgICB0eXBlIG1hc3RlcjsKICAgIGZpbGUgIi9yb290L2RiLmxhYjQubG9jYWwiOwp9Owo= | base64 -d > /root/named.conf.template'
+  - node: srv
+    cmd: 'echo JFRUTCAzNjAwCkAgICBJTiAgU09BIG5zLmxhYjQubG9jYWwuIHJvb3QubGFiNC5sb2NhbC4gKAogICAgICAgIDIwMjYwOTI4MDEgOyBzZXJpYWwKICAgICAgICAzNjAwICAgICAgIDsgcmVmcmVzaAogICAgICAgIDYwMCAgICAgICAgOyByZXRyeQogICAgICAgIDYwNDgwMCAgICAgOyBleHBpcmUKICAgICAgICA2MCApICAgICAgIDsgbWluaW11bQogICAgSU4gIE5TICBucy5sYWI0LmxvY2FsLgpucyAgIElOICBBICAgMTAuMS40MC4xCndlYiAgSU4gIEEgICBBX1JFTVBMQUNFUgo= | base64 -d > /root/db.lab4.local.template'
+  - node: srv
+    cmd: 'echo cG9ydD0wCmludGVyZmFjZT1ldGgxCmRoY3AtcmFuZ2U9UkVTRUFVLERFUk5JRVJFUkVTRUFVCmRoY3Atb3B0aW9uPTMsUEFTU0VSRUxMRQpkaGNwLW9wdGlvbj02LDEwLjEuNDAuMQpkaGNwLWxlYXNlLW1heD02NApsb2ctZGhjcAo= | base64 -d > /root/dnsmasq.conf.template'
+  - node: srv
+    cmd: 'echo ZHJpZnRmaWxlIC92YXIvbGliL2Nocm9ueS9jaHJvbnkuZHJpZnQKbG9jYWwgc3RyYXR1bSAxMAphbGxvdyAxMC4xLjAuMC8xNgo= | base64 -d > /root/chrony-server.conf.template'
+  - node: client1
+    cmd: 'echo ZHJpZnRmaWxlIC92YXIvbGliL2Nocm9ueS9jaHJvbnkuZHJpZnQKc2VydmVyIDEwLjEuNDAuMSBtaW5wb2xsIDIgbWF4cG9sbCAzCm1ha2VzdGVwIDEuMCAzCg== | base64 -d > /root/chrony-client.conf.template'
+validation:
+  quiz_min_score: 70
+  lab_required: true

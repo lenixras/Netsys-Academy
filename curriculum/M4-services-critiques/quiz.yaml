@@ -1,0 +1,91 @@
+questions:
+- q: "Un bail DHCP expire et doit être :"
+  choices:
+    - "renouvelé par le client (REQUEST auprès du serveur)"
+    - "supprimé du DNS"
+    - "converti en adresse statique automatiquement"
+    - "remplacé par une synchronisation NTP"
+  answer: 0
+  points: 1
+  expl: "Le bail n'est pas automatique : à mi-durée le client envoie un REQUEST au serveur qui lui a accordé le bail, pour le renouveler ; sans renouvellement l'adresse est libérée."
+- q: "Un enregistrement DNS A relie :"
+  choices:
+    - "un nom à une adresse IPv4"
+    - "un nom à un serveur SMTP"
+    - "une IP à une adresse MAC"
+    - "un domaine à son serveur MX"
+  answer: 0
+  points: 1
+  expl: "L'enregistrement A associe un nom d'hôte à une adresse IPv4 (AAAA pour IPv6) ; c'est MX qui désigne les serveurs de messagerie du domaine."
+- q: "Pour se passer de mot de passe en SSH on utilise :"
+  choices:
+    - "des clés publiques autorisées (authorized_keys)"
+    - "le port 22 basculé en FTP"
+    - "une synchronisation NTP"
+    - "un bail DHCP réservé"
+  answer: 0
+  points: 1
+  expl: "On dépose sa clé publique dans ~/.ssh/authorized_keys du serveur : l'authentification se fait alors par signature avec la clé privée, sans mot de passe."
+- q: "Dans une zone DNS, le champ serial du SOA sert à :"
+  choices:
+    - "signaler aux secondaires que la zone a changé (à incrémenter)"
+    - "compter les requêtes par seconde"
+    - "fixer le TTL de tous les enregistrements"
+    - "signer la zone avec DNSSEC"
+  answer: 0
+  points: 1
+  expl: "Les serveurs secondaires comparent le serial du SOA lors des transferts de zone : il faut l'incrémenter à chaque modification pour que les secondaires comprennent qu'ils doivent recharger."
+- q: "Un named faisant autorité pour une zone interne doit tourner avec :"
+  choices:
+    - "recursion no"
+    - "recursion yes ouvert à tout le monde"
+    - "le port 53 fermé"
+    - "un seul enregistrement NS"
+  answer: 0
+  points: 1
+  expl: "Un serveur d'autorité n'a pas besoin de récursion ; l'autoriser publiquement exposerait le serveur à être abusé comme reflecteur/amplificateur dans des attaques DDoS."
+- q: "Les ports UDP du DHCP sont :"
+  choices:
+    - "67 côté serveur, 68 côté client"
+    - "53 côté serveur, 5353 côté client"
+    - "123 dans les deux sens"
+    - "22 pour l'annonce des baux"
+  answer: 0
+  points: 1
+  expl: "Le client DHCP écoute sur l'UDP 68 et le serveur sur l'UDP 67 ; le 53 est DNS, le 123 NTP et le 22 SSH."
+- q: "Dans chrony, la directive « local stratum 10 » sert à :"
+  choices:
+    - "offrir une référence horaire de secours sans source réseau"
+    - "interdire tous les clients"
+    - "forcer un saut d'heure (step)"
+    - "définir le fuseau horaire"
+  answer: 0
+  points: 1
+  expl: "« local stratum 10 » déclare le serveur comme référence locale de dernier recours quand les sources distantes sont injoignables, afin de continuer à synchroniser les clients."
+- q: "L'option SSH BatchMode=yes :"
+  choices:
+    - "fait échouer la connexion immédiatement sans clé autorisée"
+    - "force l'authentification par mot de passe"
+    - "désactive le chiffrement"
+    - "exécute plusieurs commandes à la suite"
+  answer: 0
+  points: 1
+  expl: "BatchMode=yes interdit toute interaction (prompt de mot de passe ou de confirmation) : la connexion échoue tout de suite si une clé autorisée ne suffit pas, idéal dans les scripts."
+- q: "Les permissions correctes pour l'authentification par clé sont :"
+  choices:
+    - ".ssh en 700 et authorized_keys en 600, propriété de l'utilisateur"
+    - "authorized_keys en 644, l'utilisateur n'a pas besoin d'être owner"
+    - ".ssh en 777 pour que sshd puisse lire"
+    - "la clé privée doit aussi être déposée sur le serveur"
+  answer: 0
+  points: 1
+  expl: "sshd refuse d'utiliser des fichiers accessibles en écriture à autrui, sinon n'importe qui pourrait y injecter sa clé ; d'où .ssh en 700 et authorized_keys en 600, appartenant à l'utilisateur."
+- q: "Pour qu'un serveur DHCP sur 10.1.40.0/24 desserve un autre sous-réseau, il faut :"
+  choices:
+    - "un relais DHCP sur le routeur (remplissage de giaddr)"
+    - "désactiver le broadcast sur le switch"
+    - "augmenter le TTL des paquets DHCP"
+    - "rien : le broadcast traverse les routeurs"
+  answer: 0
+  points: 1
+  expl: "Le discovery DHCP est un broadcast que les routeurs ne relaient pas ; le relais (ip helper-address) transmet au serveur et remplit giaddr avec l'interface, pour qu'il choisisse la bonne plage d'adresses."

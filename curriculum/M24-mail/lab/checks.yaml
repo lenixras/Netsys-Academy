@@ -1,0 +1,29 @@
+checks:
+- id: smtp_listening
+  node: mx
+  cmd: ss -tln | grep -c ":25"
+  expect: ^[1-9]$
+  points: 2
+  hint: 'Postfix n''ecoute pas le 25 : ''postconf -e \''myhostname = mx.lab24.local\'' ; postconf -e \''mydestination = mx.lab24.local, localhost\'' ; postconf -e \''inet_interfaces = all\'' ; postconf
+    -e \''mynetworks = 10.24.0.0/24\'' ; newaliases ; postfix start'' (etape 1).'
+- id: smtp_banner_cli
+  node: cli
+  cmd: timeout 3 bash -c 'exec 3<>/dev/tcp/10.24.0.10/25; head -1 <&3' | grep -c "^220"
+  expect: ^1$
+  points: 1
+  hint: 'Le banner 220 prouve que le service repond du LAN. Si connection refusee : inet_interfaces/myhostname (etape 1), verifier ''postfix status''.'
+- id: mail_delivered
+  node: mx
+  cmd: grep -c "sujet lab24" /var/mail/alice
+  expect: ^[1-9]$
+  points: 2
+  hint: 'Un message ''sujet lab24'' doit atterrir dans la boite d''alice : envoyer ''echo sujet\ lab24 | sendmail alice@mx.lab24.local'' depuis cli ou mx. Si ca rebondit : mydestination ne couvre pas mx.lab24.local
+    (etape 1), ou postfix pas demarre.'
+- id: imap_login
+  node: cli
+  cmd: curl -s -m 5 -u alice:secret imap://10.24.0.10/ | grep -c INBOX
+  expect: ^[1-9]$
+  points: 2
+  hint: 'Dovecot doit exposer IMAP sur 10.24.0.10:143 : ecrire /etc/dovecot/dovecot.conf aux normes 2.4 : en-tetes dovecot_config_version = 2.4.0 et dovecot_storage_version = 2.4.0, puis protocols = imap;
+    listen = 10.24.0.10; ssl = no; auth_allow_cleartext = yes; auth_mechanisms = plain login; mail_driver = mbox; mail_inbox_path = /var/mail/%u; mail_path = /var/mail/%u; passdb pam { driver = pam }; userdb
+    passwd { driver = passwd }. Lancer ''dovecot'' (etape 2). ''doveconf -n'' affiche l''erreur de config exacte.'

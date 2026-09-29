@@ -1,0 +1,9 @@
+name: m2-shell
+mgmt:
+  network: clab-m2
+  ipv4-subnet: 10.198.10.0/24
+topology:
+  nodes:
+    h1:
+      kind: linux
+      image: netsys/labnode:2

@@ -1,0 +1,25 @@
+id: M19
+title: 'Cisco-like : CLI IOS sur routeur et routage inter-VLAN'
+wave: 2
+prereqs:
+- M5
+- M6
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: sw
+    cmd: ip link add br0 type bridge vlan_filtering 1 && ip link set br0 up
+  - node: sw
+    cmd: ip link set eth1 master br0 && ip link set eth2 master br0 && ip link set eth3 master br0 && ip link set eth1 up && ip link set eth2 up && ip link set eth3 up
+  - node: sw
+    cmd: bridge vlan add dev eth1 vid 10 pvid untagged && bridge vlan add dev eth2 vid 20 pvid untagged && bridge vlan add dev eth3 vid 10 tagged && bridge vlan add dev eth3 vid 20 tagged
+  - node: sw
+    cmd: bridge vlan del dev eth1 vid 1 && bridge vlan del dev eth2 vid 1 && bridge vlan del dev eth3 vid 1
+validation:
+  quiz_min_score: 70
+  lab_required: true

@@ -1,0 +1,48 @@
+# Capstone M17 — 15 points, 8 checks. Chaque commande est jouée via `sh -c` dans le nœud.
+checks:
+- id: ping_pc1_passerelle_core1
+  node: pc1
+  cmd: ping -c2 -W1 10.17.100.1
+  expect: 0% packet loss
+  points: 2
+  hint: "pc1 n'atteint pas sa passerelle 10.17.100.1. Verifie l'adressage des deux bouts (pc1 eth1 en 10.17.100.10/24, core1 eth1 en 10.17.100.1/24, liens up) et que le pont de acc1 relie bien les deux dans le VLAN 100 : bridge vlan show sur acc1 (etape 2)."
+- id: ping_pc1_serveur
+  node: pc1
+  cmd: ping -c2 -W1 10.17.200.50
+  expect: 0% packet loss
+  points: 2
+  hint: "Le ping vers le serveur 10.17.200.50 echoue : tout le chemin L3 doit etre pret. Il faut la route par defaut de pc1 (via 10.17.100.1), ip_forward=1 sur core1 et core2, la route 10.17.200.0/24 via 10.17.0.2 sur core1, la 10.17.100.0/24 via 10.17.0.1 sur core2 et la passerelle 10.17.200.1 sur srv1. Decoupe le chemin : ping 10.17.0.2 depuis core1, etc."
+- id: ping_pc1_internet_nat
+  node: pc1
+  cmd: ping -c2 -W1 20.20.20.10
+  expect: 0% packet loss
+  points: 2
+  hint: "pc1 ne joint pas l'Internet simule 20.20.20.10 : sans NAT, ext ne sait pas revenir vers 10.17.100.10. Ajoute la masquerade sur core1 (etape 4) : table ip nat, chaine postrouting de type nat puis nft add rule ip nat po oifname eth3 masquerade. Verifie aussi la route par defaut de pc1 vers 10.17.100.1."
+- id: dns_intranet_depuis_pc1
+  node: pc1
+  cmd: dig +short intranet.capstone @10.17.200.50
+  expect: 10\.17\.200\.50
+  points: 3
+  hint: "La resolution de intranet.capstone ne repond pas depuis pc1. dnsmasq doit tourner sur srv1 avec l'adresse demandee : dnsmasq --port=53 --user=root --group=root --no-resolv --address=/intranet.capstone/10.17.200.50 (etape 5). Teste d'abord le reseau : ping 10.17.200.50 depuis pc1, puis dig depuis srv1 lui-meme."
+- id: vlan100_sur_port_pc1
+  node: acc1
+  cmd: bridge vlan show dev eth1 | tr -d '\t'
+  expect: 100 +PVID +Egress Untagged
+  points: 2
+  hint: "Le port eth1 de acc1 (cote pc1) n'est pas en acces VLAN 100 non tagge. Cree le pont avec ip link add name br0 type bridge vlan_filtering 1, ajoute eth1 au pont, puis bridge vlan add dev eth1 vid 100 pvid untagged (etape 2). Controle avec bridge vlan show dev eth1."
+- id: route_utilisateurs_sur_core2
+  node: core2
+  cmd: ip route | grep 10.17.100.0/24
+  expect: via 10\.17\.0\.1
+  points: 1
+  hint: "core2 ne connait pas le reseau des utilisateurs : la route statique documentee est absente. Sur core2 : ip route add 10.17.100.0/24 via 10.17.0.1 (l'adresse de core1 sur l'interco /30). Verifie avec ip route get 10.17.100.10."
+- id: dnsmasq_actif_srv1
+  node: srv1
+  cmd: pidof dnsmasq
+  points: 1
+  hint: "Aucun dnsmasq ne tourne sur srv1 et il n'y a pas de systemd ici : lance-le a la main avec les options de l'etape 5 (port 53, --no-resolv, --address=/intranet.capstone/10.17.200.50), en arriere-plan si besoin (nohup ... &). pidof dnsmasq doit alors repondre."
+- id: internet_isole_des_utilisateurs
+  node: ext
+  cmd: "! ping -c1 -W2 10.17.100.10"
+  points: 2
+  hint: "ext arrive encore a joindre pc1 (10.17.100.10) : le filtre entrant manque sur core1. En nftables (iptables n'est pas installe), chaine forward hook : autoriser d'abord les retours iifname eth3 ct state established,related accept puis bloquer iifname eth3 ip daddr 10.17.100.0/24 counter drop (etape 4)."

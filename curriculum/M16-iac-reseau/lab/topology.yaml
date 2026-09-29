@@ -1,0 +1,9 @@
+name: m16-iac
+mgmt:
+  network: clab-m16
+  ipv4-subnet: 10.198.19.0/24
+topology:
+  nodes:
+    dev2:
+      kind: linux
+      image: netsys/labnode:2

@@ -1,0 +1,14 @@
+id: M8
+title: "Adresse IP & sous-réseaux (subnetting, VLSM, IPv6)"
+wave: 2
+prereqs: [M1]
+status: full
+lab:
+  mode: drills
+  dir: lab
+  checks: check.py
+  problems: problems.yaml
+  ttl_min: 30
+validation:
+  quiz_min_score: 70
+  lab_required: true

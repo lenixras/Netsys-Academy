@@ -1,0 +1,91 @@
+questions:
+- q: "Quelle couche du modèle OSI s'occupe du routage ?"
+  choices:
+    - 'Couche 3 (réseau)'
+    - 'Couche 2'
+    - 'Couche 4'
+    - 'Couche 7'
+  answer: 0
+  points: 1
+  expl: "Le routage, c'est-à-dire le choix d'un chemin entre réseaux, est la fonction de la couche 3, là où l'adresse IP a un sens."
+- q: 'Le three-way handshake TCP est :'
+  choices:
+    - 'SYN, SYN/ACK, ACK'
+    - 'ACK, SYN, FIN'
+    - 'SYN, ACK, FIN'
+    - 'HELLO, OK, BYE'
+  answer: 0
+  points: 1
+  expl: "La connexion TCP s'établit en trois messages : le client envoie SYN, le serveur répond SYN/ACK, puis le client confirme par ACK."
+- q: "Dans l'encapsulation TCP/IP, que reçoit la couche Liaison (2) ?"
+  choices:
+    - "Un paquet IP auquel elle ajoute un en-tête Ethernet"
+    - "Une requête DNS"
+    - "Un bit brut du câble"
+    - "Un segment TCP sans adresse IP"
+  answer: 0
+  points: 1
+  expl: "Chaque couche encapsule la PDU de la couche supérieure : la couche 2 reçoit le paquet IP de la couche 3 et lui ajoute l'en-tête Ethernet (adresses MAC)."
+- q: "Quelle est la taille minimale d'un en-tête IPv4 (sans options) ?"
+  choices:
+    - "20 octets"
+    - "14 octets"
+    - "8 octets"
+    - "64 octets"
+  answer: 0
+  points: 1
+  expl: "L'en-tête IPv4 de base fait 20 octets (14 octets, c'est l'en-tête Ethernet) ; avec les 20 octets de TCP, cela donne les 40 octets de surcoût utilisés pour calculer la MSS."
+- q: "Une requête ARP est envoyée :"
+  choices:
+    - "en diffusion (ff:ff:ff:ff:ff:ff)"
+    - "en unicast vers le serveur DNS"
+    - "vers la passerelle par défaut uniquement"
+    - "sur TCP port 68"
+  answer: 0
+  points: 1
+  expl: "On ne connaît pas encore la MAC du détenteur de l'IP : la requête ARP est donc diffusée à tout le segment (ff:ff:ff:ff:ff:ff) et seul le concerné répond en unicast."
+- q: "Le MTU Ethernet (1500 octets) est une limite de quelle couche ?"
+  choices:
+    - "Couche 2 (liaison)"
+    - "Couche 3 (réseau)"
+    - "Couche 4 (transport)"
+    - "Couche 7 (application)"
+  answer: 0
+  points: 1
+  expl: "Le MTU est la charge utile maximale que la liaison (couche 2) peut transporter ; au-dessus, la couche 3 doit fragmenter ou la couche 4 réduire ses segments."
+- q: "La MSS TCP vaut typiquement :"
+  choices:
+    - "MTU moins 40 octets (en-têtes IP + TCP)"
+    - "la taille de la fenêtre de réception"
+    - "65535 octets toujours"
+    - "le MTU plus l'en-tête Ethernet"
+  answer: 0
+  points: 1
+  expl: "La MSS est la quantité maximale de données TCP par segment : MTU 1500 moins 20 octets d'en-tête IP et 20 d'en-tête TCP, soit 1460 octets."
+- q: "Quel champ d'une requête DNS permet d'apparier la réponse ?"
+  choices:
+    - "L'identifiant de transaction (dns.id)"
+    - "Le port source UDP"
+    - "Le TTL de l'enregistrement"
+    - "L'adresse MAC du résolveur"
+  answer: 0
+  points: 1
+  expl: "DNS voyage en UDP, sans connexion : c'est l'identifiant de transaction (16 bits) recopié par le serveur qui permet d'apparier chaque réponse avec sa requête."
+- q: "Un switch Ethernet se limite principalement à la couche :"
+  choices:
+    - "2 (il lit les adresses MAC)"
+    - "3 (il lit les adresses IP)"
+    - "4 (il lit les ports)"
+    - "7 (il lit l'HTTP)"
+  answer: 0
+  points: 1
+  expl: "Un switch commute les trames en fonction des adresses MAC, au niveau de la couche 2 ; il n'inspecte pas les adresses IP, réservées au routeur (couche 3)."
+- q: "Dans tshark, quelle commande affiche l'arbre complet d'une trame, couche par couche ?"
+  choices:
+    - "tshark -r capture.pcap -V"
+    - "tshark -r capture.pcap -x"
+    - "tshark -r capture.pcap -Y dns"
+    - "tshark -r capture.pcap -T fields"
+  answer: 0
+  points: 1
+  expl: "L'option -V (verbose) imprime l'arbre de décodage complet de la trame, couche par couche ; -x affiche l'hexadécimal, -Y filtre et -T ne sort que des champs."

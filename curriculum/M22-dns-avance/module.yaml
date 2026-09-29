@@ -1,0 +1,37 @@
+id: M22
+title: 'DNS avancé : zones secondaires, transferts et délégation'
+wave: 3
+prereqs:
+- M4
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+  - node: auth
+    cmd: ip addr add 10.22.1.1/24 dev eth1 && ip link set eth1 up
+  - node: rec
+    cmd: ip addr add 10.22.1.2/24 dev eth2 && ip addr add 10.22.0.2/24 dev eth1 && ip link set eth1 up && ip link set eth2 up
+  - node: cli
+    cmd: ip addr add 10.22.0.30/24 dev eth1 && ip link set eth1 up && echo nameserver 10.22.0.2 > /etc/resolv.conf
+  - node: auth
+    cmd: echo b3B0aW9ucyB7CiAgICBkaXJlY3RvcnkgIi92YXIvY2FjaGUvYmluZCI7CiAgICBsaXN0ZW4tb24gcG9ydCA1MyB7IGFueTsgfTsKICAgIGFsbG93LXF1ZXJ5IHsgYW55OyB9OwogICAgYWxsb3ctdHJhbnNmZXIgeyBub25lOyB9OwogICAgcmVjdXJzaW9uIG5vOwp9Owp6b25lICJsYWIyMi5sb2NhbCIgeyB0eXBlIG1hc3RlcjsgZmlsZSAiL3Jvb3QvZGIubGFiMjIubG9jYWwiOyB9Owp6b25lICIwLjIyLjEwLmluLWFkZHIuYXJwYSIgeyB0eXBlIG1hc3RlcjsgZmlsZSAiL3Jvb3QvZGIuMC4yMi4xMCI7IH07Cg==
+      | base64 -d > /root/named.conf
+  - node: auth
+    cmd: echo JFRUTCAzNjAwCkAgICBJTiAgU09BIG5zLmxhYjIyLmxvY2FsLiBhZG1pbi5sYWIyMi5sb2NhbC4gKAogICAgICAyMDI2MDkyODAxIDsgc2VyaWFsCiAgICAgIDM2MDAgNjAwIDYwNDgwMCA2MCApCiAgICBJTiAgTlMgIG5zLmxhYjIyLmxvY2FsLgpucyAgSU4gIEEgICAxMC4yMi4xLjEKd2ViIElOICBBICAgMTAuMjIuMC45OQo=
+      | base64 -d > /root/db.lab22.local
+  - node: auth
+    cmd: echo JFRUTCAzNjAwCkAgICBJTiAgU09BIG5zLmxhYjIyLmxvY2FsLiBhZG1pbi5sYWIyMi5sb2NhbC4gKAogICAgICAyMDI2MDkyODAxIDsgc2VyaWFsCiAgICAgIDM2MDAgNjAwIDYwNDgwMCA2MCApCiAgICBJTiAgTlMgIG5zLmxhYjIyLmxvY2FsLgo5OSAgSU4gIFBUUiB3ZWIubGFiMjIubG9jYWwuCg==
+      | base64 -d > /root/db.0.22.10
+  - node: auth
+    cmd: mkdir -p /var/cache/bind
+  - node: auth
+    cmd: named -c /root/named.conf -g > /root/named.log 2>&1 &
+  - node: rec
+    cmd: mkdir -p /var/cache/bind
+validation:
+  quiz_min_score: 70
+  lab_required: true

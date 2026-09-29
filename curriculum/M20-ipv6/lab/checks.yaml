@@ -1,0 +1,30 @@
+checks:
+- id: radvd_running
+  node: r1
+  cmd: pgrep -x radvd
+  points: 2
+  hint: 'Le routeur n''annonce rien : ecrire /etc/radvd.conf (interface eth1 { AdvSendAdvert on; prefix 2001:db8:acad:1::/64 {}; };) puis lancer ''radvd'' (etape 1).'
+- id: slaac_h1
+  node: h1
+  cmd: ip -6 addr show dev eth1 scope global | grep -c "2001:db8:acad:1:"
+  expect: ^1$
+  points: 2
+  hint: 'h1 doit obtenir une adresse SLAAC dans 2001:db8:acad:1::/64 grace aux RA de radvd : verifier ''radvd -c /etc/radvd.conf'' (syntaxe), puis ''ip -6 addr show dev eth1'' sur h1 (etape 1).'
+- id: h1_ping_gateway
+  node: h1
+  cmd: ping -6 -c2 -W2 2001:db8:acad:1::1
+  expect: 0% packet loss
+  points: 2
+  hint: 'Ping6 vers la passerelle : l''adresse SLAAC (etape 1) doit etre presente et le lien up. Si ''unreachable'', verifier que l''adresse de r1 est bien 2001:db8:acad:1::1/64 sur eth1.'
+- id: static_route_lan2
+  node: h1
+  cmd: ip -6 route show | grep -c "2001:db8:acad:2::/64"
+  expect: ^1$
+  points: 1
+  hint: 'La deuxieme LAN (2001:db8:acad:2::/64) n''est pas dans la table : ajouter ''ip -6 route add 2001:db8:acad:2::/64 via 2001:db8:acad:1::1'' sur h1 (etape 2).'
+- id: h1_ping_lan2
+  node: h1
+  cmd: ping -6 -c2 -W2 2001:db8:acad:2::1
+  expect: 0% packet loss
+  points: 3
+  hint: Le test final passe quand la route statique v6 existe (etape 2) et que la passerelle repond. Controle avec 'ip -6 route get 2001:db8:acad:2::1' sur h1.

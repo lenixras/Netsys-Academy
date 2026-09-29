@@ -1,0 +1,55 @@
+questions:
+- q: Combien de bits dans une adresse IPv6 ?
+  choices:
+  - '32'
+  - '64'
+  - '128'
+  - '256'
+  answer: 2
+  points: 1
+  expl: 128 bits, soit 8 groupes hexadécimaux de 16 bits.
+- q: A quoi sert une adresse link-local fe80::/10 ?
+  choices:
+  - Elle route sur Internet
+  - 'Elle sert aux voisins immédiats : ND, RA et next-hop des routes'
+  - Elle remplace le DNS
+  - Elle chiffre le lien
+  answer: 1
+  points: 1
+  expl: 'Toute interface v6 a une fe80:: ; les protocoles de voisinage et les routes y référencent le next-hop.'
+- q: Que signifie 'autonomous' dans un préfixe annoncé par RA ?
+  choices:
+  - Le préfixe est public
+  - Les hôtes peuvent former leurs adresses par SLAAC
+  - Pas de route statique
+  - DHCPv6 obligatoire
+  answer: 1
+  points: 1
+  expl: Le flag A du RA autorise la construction auto de l'adresse globale à partir du préfixe.
+- q: 'radvd joue le rôle de :'
+  choices:
+  - Serveur DNS
+  - Annonceur de RA (l'« hôte DHCP » stateless de IPv6)
+  - Pare-feu
+  - Refroidisseur de caches
+  answer: 1
+  points: 1
+  expl: 'radvd envoie les RA : préfixes, drapeaux et durée de vie. Il ne gère aucun bail.'
+- q: Comment écrire en forme raccourcie 2001:0db8:0000:0000:0000:0000:0000:0001 ?
+  choices:
+  - 2001:db8::1
+  - 2001:db8:0:0:0:0:0:1 uniquement
+  - 2001::db8:1
+  - 2001:db8:::1
+  answer: 0
+  points: 1
+  expl: On retire les zéros tête de groupe et un seul '::' compacte les groupes nuls.
+- q: 'En IPv6, le NAT (« masquerade ») est :'
+  choices:
+  - Obligatoire
+  - 'Inutile dans le modèle du cours : on a des adresses globales pour tout le monde'
+  - Plus rapide qu'en v4
+  - Géré par radvd
+  answer: 1
+  points: 1
+  expl: Le stock d'adresses v6 rend le NAT superflu aux frontières ; on segmente par filtrage, pas par traduction.

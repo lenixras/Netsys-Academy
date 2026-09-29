@@ -1,0 +1,20 @@
+name: m11-fw
+mgmt:
+  network: clab-m11
+  ipv4-subnet: 10.198.14.0/24
+topology:
+  nodes:
+    lan:
+      kind: linux
+      image: netsys/labnode:2
+    fw:
+      kind: linux
+      image: netsys/labnode:2
+    wan:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    # zone LAN (de confiance) : 10.10.110.0/24
+    - endpoints: ["lan:eth1", "fw:eth1"]
+    # zone WAN (non de confiance) : 10.10.120.0/24
+    - endpoints: ["fw:eth2", "wan:eth1"]

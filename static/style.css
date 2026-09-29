@@ -1,0 +1,80 @@
+:root { --bg:#0e1322; --card:#161d31; --fg:#dce3f3; --mut:#8391ad; --acc:#5b8cff; --ok:#3ddc84; --bad:#ff6b6b; }
+* { box-sizing:border-box }
+body{margin:0;font:15px/1.55 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+header{display:flex;justify-content:space-between;padding:12px 20px;background:var(--card)}
+header a{color:var(--acc);text-decoration:none;font-weight:600}
+.who{color:var(--mut)}
+main{max-width:980px;margin:0 auto;padding:20px}
+h1{font-size:1.5rem} h2{font-size:1.1rem;color:var(--mut)} h3{font-size:.95rem;color:var(--mut)}
+.muted{color:var(--mut)} .tag{font-size:.75rem;background:var(--acc);color:#fff;border-radius:8px;padding:1px 8px;margin-left:6px}
+ul.mods{list-style:none;padding:0} ul.mods li{padding:6px 0;border-bottom:1px solid #1f2840}
+a{color:var(--acc)}
+button{background:var(--acc);border:0;color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+button.mini{background:#24304e;padding:2px 8px;font-size:.8rem}
+input,select,textarea{background:#101a2c;color:var(--fg);border:1px solid #24304e;border-radius:6px;padding:6px}
+
+/* onglets */
+.tabs{display:flex;gap:6px;margin:16px 0 12px;border-bottom:2px solid #1f2840}
+.tabs button{background:none;color:var(--mut);border-radius:8px 8px 0 0;padding:8px 16px}
+.tabs button.on{background:var(--card);color:var(--fg);box-shadow:inset 0 -2px 0 var(--acc)}
+.tab{margin-bottom:24px}
+
+#actions{display:flex;gap:10px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.row small{color:var(--mut)} .row button{margin-left:auto}
+
+/* topologie */
+#topo { width:100%; background: #0b1220; border: 1px solid #223; border-radius: 6px; touch-action:none; }
+#topo .link { stroke: #4a6; stroke-width: 2; }
+#topo .tnode { cursor: grab; }
+#topo .tnode rect, #topo .tnode circle { fill: #16324f; stroke: #4aa3ff; stroke-width: 2; }
+#topo .tnode line, #topo .tnode path { stroke: #4aa3ff; stroke-width: 2; fill: none; }
+#topo .tnode.switch rect, #topo .tnode.router rect { fill: #123c2a; stroke: #4ae08a; }
+#topo .tnode.switch line, #topo .tnode.router path { stroke: #4ae08a; }
+#topo .tnode.frr rect, #topo .tnode.frr path { fill: #4f3316; stroke: #ffb34a; }
+#topo .tnode.frr { cursor: grab; }
+#topo .tnode text { fill: #e6e6e6; font: 12px monospace; text-anchor: middle; stroke: none; }
+.legend { margin: 2px 0 6px; font-size: .85rem; }
+button.mini.on, #topo-wire.on { outline: 2px solid var(--acc); }
+#node-list,#link-list{max-height:160px;overflow:auto;background:#101a2c;border-radius:6px;padding:4px 10px}
+
+/* terminaux */
+.term-wrap{background:#0b1220;border:1px solid #24304e;border-radius:8px;overflow:hidden;margin:10px 0}
+.term-wrap .row{padding:4px 10px;margin:0;background:var(--card)}
+.term{height:400px;padding:6px}
+
+/* vérification : cartes de checks */
+.chk{background:var(--card);border-left:4px solid var(--mut);border-radius:8px;padding:8px 12px;margin:8px 0}
+.chk.pass{border-left-color:var(--ok)} .chk.fail{border-left-color:var(--bad)}
+.badge{font-size:.75rem;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:8px}
+.chk.pass .badge{background:var(--ok);color:#08240f} .chk.fail .badge{background:var(--bad);color:#2b0808}
+.chk .hint{color:#ffd479;margin:6px 0 0}
+.chk details summary{cursor:pointer;color:var(--mut);font-size:.85rem}
+.chk pre{margin:6px 0}
+.bar{background:#101a2c;border-radius:8px;height:12px;overflow:hidden;margin:8px 0 16px}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--ok))}
+.congrats{color:var(--ok);font-weight:600}
+.push{color:var(--mut);font-size:.85rem}
+
+/* quiz */
+.qq{background:var(--card);border:1px solid #24304e;border-radius:8px;margin:10px 0;padding:10px 14px}
+.qq label{display:block;padding:3px 6px;border-radius:6px;cursor:pointer}
+.qq label.good{outline:1px solid var(--ok)}
+.qq.ok{border-left:4px solid var(--ok)} .qq.bad{border-left:4px solid var(--bad)}
+.qq .expl{color:var(--mut);font-size:.9rem;margin:8px 0 0}
+#quiz-box>button{margin-top:8px}
+
+/* exercices drills */
+#drill-form label.drill{display:block;margin:10px 0}
+#drill-form input{width:100%;padding:6px}
+
+pre{background:var(--card);padding:12px;border-radius:8px;overflow:auto}
+code{background:var(--card);padding:1px 5px;border-radius:4px}
+pre code{background:none;padding:0}
+#tool-out{white-space:pre-wrap;max-height:300px;overflow:auto}
+.scenario{border-top:1px solid #24304e;padding-top:8px}
+.login input{padding:8px}
+table { border-collapse: collapse; }
+table,th,td{border:1px solid #223}
+th,td { padding: 4px 10px; text-align: left; }

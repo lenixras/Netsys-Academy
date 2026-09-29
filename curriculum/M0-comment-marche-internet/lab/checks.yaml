@@ -1,0 +1,31 @@
+checks:
+- id: gw_ipv4
+  node: h1
+  cmd: test "$(cat /root/obs/gw_ipv4.txt)" = "$(ip route show default | awk '{print $3}')"
+  points: 2
+  hint: "La passerelle par defaut est l adresse apres via dans la sortie de ip route show default. Recopie cette IP seule, sans masque, dans /root/obs/gw_ipv4.txt."
+- id: gw_mac
+  node: h1
+  cmd: test "$(cat /root/obs/gw_mac.txt)" = "$(ip -o neigh get $(ip route show default | awk '{print $3}') dev eth0 | awk '{print $5}')"
+  points: 2
+  hint: "L adresse MAC de la passerelle est le champ lladdr rendu par ip -o neigh get <IP-passerelle> dev eth0. Ping d abord la passerelle pour peupler le cache ARP puis recopie la MAC en minuscules dans /root/obs/gw_mac.txt."
+- id: mgmt_prefix
+  node: h1
+  cmd: test "$(cat /root/obs/mgmt_prefix.txt)" = "$(ip -4 route show scope link dev eth0 | awk '{print $1}')"
+  points: 2
+  hint: "Le prefixe de ton reseau est la premiere valeur de ip -4 route show scope link dev eth0. C est l adresse reseau de eth0 au format adresse/masque, par exemple 10.198.8.0/24. Ecris la dans /root/obs/mgmt_prefix.txt."
+- id: dns_atelier
+  node: h1
+  cmd: test "$(cat /root/obs/dns_atelier.txt)" = "$(getent hosts atelier.m0.internal | awk '{print $1}')"
+  points: 2
+  hint: "L adresse de atelier.m0.internal est la premiere colonne de getent hosts atelier.m0.internal. Cette resolution vient du fichier /etc/hosts. Recopie cette IP dans /root/obs/dns_atelier.txt."
+- id: resolver
+  node: h1
+  cmd: test "$(cat /root/obs/resolver.txt)" = "$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf)"
+  points: 1
+  hint: "Le resolveur DNS est la valeur qui suit nameserver dans le fichier /etc/resolv.conf, souvent 127.0.0.11 en conteneur. Recopie cette IP dans /root/obs/resolver.txt."
+- id: mtu_eth0
+  node: h1
+  cmd: test "$(cat /root/obs/mtu.txt)" = "$(cat /sys/class/net/eth0/mtu)"
+  points: 1
+  hint: "Le MTU de eth0 est le contenu du fichier /sys/class/net/eth0/mtu, generiquement 1500. Ecris ce nombre seul, sans unite, dans /root/obs/mtu.txt."

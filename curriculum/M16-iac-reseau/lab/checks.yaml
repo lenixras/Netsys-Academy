@@ -1,0 +1,26 @@
+checks:
+- id: lint_ok
+  node: dev2
+  cmd: python3 /root/lab/lint.py /root/lab/topo.yaml
+  points: 5
+  hint: "Le linter trouve encore des erreurs dans /root/lab/topo.yaml. Lance python3 /root/lab/lint.py /root/lab/topo.yaml pour les lister : noeud sans image:, lien vers le noeud fantome r9, lien dont les deux bouts sont identiques. Compare avec le YAML attendu de /root/lab/spec.md (indentation 2 espaces) et itere jusqu'a lint: OK."
+- id: commit_de_correction
+  node: dev2
+  cmd: git -C /root/lab log --oneline | grep -qi fix
+  points: 2
+  hint: "Aucun commit contenant fix dans git -C /root/lab log --oneline : tes corrections de topo.yaml ne sont pas validees. Une fois le lint OK : git -C /root/lab add -A puis git -C /root/lab commit -m fix topo (etape 3)."
+- id: lien_r3_eth2_present
+  node: dev2
+  cmd: grep -q r3:eth2 /root/lab/topo.yaml
+  points: 1
+  hint: "Le lien r3:eth2 manque dans /root/lab/topo.yaml alors que la spec.md l'impose : c'est le 4e lien r3:eth2 <-> sw1:eth2. Ajoute dans topology.links une liste endpoints contenant r3:eth2 et sw1:eth2 puis relance le linter."
+- id: reference_r9_supprimee
+  node: dev2
+  cmd: "! grep -q r9 /root/lab/topo.yaml"
+  points: 1
+  hint: "Il reste une reference a r9 dans /root/lab/topo.yaml : c'est le noeud fantome, absent du plan de spec.md. Supprime le lien qui pointe vers r9:eth1 (grep -n r9 /root/lab/topo.yaml pour le localiser) puis verifie avec le linter."
+- id: arbre_de_travail_propre
+  node: dev2
+  cmd: 'test -z "$(git -C /root/lab status --porcelain)"'
+  points: 1
+  hint: "L'arbre de travail n'est pas propre : git -C /root/lab status --porcelain affiche des modifications non commitees (ou des fichiers oublies). Relis l'etape 3 : git -C /root/lab add -A puis un commit, le status doit finir totalement vide."

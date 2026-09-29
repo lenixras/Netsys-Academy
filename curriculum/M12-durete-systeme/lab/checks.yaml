@@ -1,0 +1,31 @@
+checks:
+- id: sshd_pas_de_login_root
+  node: host1
+  cmd: grep -E '^PermitRootLogin[[:space:]]+no([[:space:]]|$)' /etc/ssh/sshd_config
+  points: 2
+  hint: "Le fichier /etc/ssh/sshd_config ne contient pas de ligne active PermitRootLogin no (une ligne commentee avec # ne compte pas). Utilise l'éditeur sur host1 pour la corriger (etape 1), ou sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config puis verifie avec grep '^PermitRootLogin' /etc/ssh/sshd_config."
+- id: admin2_age_minimum
+  node: host1
+  cmd: "chage -l admin2 | grep -i minimum | grep -qE ':[[:space:]]*7$'"
+  points: 1
+  hint: "L'age minimum du mot de passe de admin2 n'est pas de 7 jours (ou le compte n'existe pas encore). Cree-le avec useradd -m -s /bin/bash admin2 puis applique la politique : chage -m 7 -M 90 admin2 (etape 2). Le resultat se lit avec chage -l admin2."
+- id: admin2_age_maximum
+  node: host1
+  cmd: "chage -l admin2 | grep -i maximum | grep -qE ':[[:space:]]*90$'"
+  points: 1
+  hint: "L'age maximum du mot de passe de admin2 n'est pas de 90 jours. La commande chage -m 7 -M 90 admin2 fixe les deux bornes a la fois (etape 2) ; verifie ensuite que chage -l admin2 affiche bien Maximum 90."
+- id: umask_durci_admin2
+  node: host1
+  cmd: "su - admin2 -c umask | grep -qE '^(0*)(27|77)$'"
+  points: 2
+  hint: "L'umask de login de admin2 vaut toujours 0022 : le durcissement n'est pas applique. Ecris umask 027 dans /etc/profile.d/99-hardening.sh avec chmod 0644 dessus (etape 3). Les fichiers de /etc/profile.d ne sont lus que par un shell de login : teste bien avec su - admin2 -c umask (le tiret est important)."
+- id: sauvegarde_passwd_compressee
+  node: host1
+  cmd: "zcat /root/backup/etc-passwd.gz | grep -q '^root:'"
+  points: 2
+  hint: "/root/backup/etc-passwd.gz n'existe pas ou n'est pas une copie compressee lisible de /etc/passwd. Sur host1 : mkdir -p /root/backup puis gzip -c /etc/passwd > /root/backup/etc-passwd.gz (etape 4). Controle avec zcat /root/backup/etc-passwd.gz | head -1 : la ligne root: doit apparaitre."
+- id: sshd_ecoute_2222
+  node: host1
+  cmd: ss -tln | grep -q ':2222'
+  points: 2
+  hint: "Rien n'ecoute en TCP sur le port 2222 : ici il n'y a pas de systemd, sshd se demarre a la main. Prepare le contexte (mkdir -p /run/sshd, ssh-keygen -A) puis lance /usr/sbin/sshd -p 2222 (etape 5) et verifie avec ss -tln | grep 2222."

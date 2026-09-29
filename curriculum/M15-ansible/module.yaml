@@ -1,0 +1,21 @@
+id: M15
+title: "Ansible"
+wave: 4
+prereqs: [M14]
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 45
+  setup:
+    - node: ctl
+      cmd: ip addr add 10.15.0.1/24 dev eth1 && ip link set eth1 up
+    - node: tgt
+      cmd: ip addr add 10.15.0.2/24 dev eth1 && ip link set eth1 up
+    - node: tgt
+      cmd: "ssh-keygen -A && mkdir -p /run/sshd && echo 'root:ansible' | chpasswd && sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && (ss -tln | grep -q ':22 ' || /usr/sbin/sshd)"
+validation:
+  quiz_min_score: 70
+  lab_required: true

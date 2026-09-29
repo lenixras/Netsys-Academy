@@ -1,0 +1,40 @@
+checks:
+- id: subif_vlan10
+  node: r1
+  cmd: ip -d link show eth1.10 2>/dev/null | grep -Ec "protocol 802.1Q +id 10"
+  expect: ^1$
+  points: 1
+  hint: 'eth1.10 n''existe pas : sous l''interface eth1, crée une sous-interface 802.1Q avec ''ip link add eth1.10 link eth1 type vlan id 10'' puis ''ip link set eth1.10 up'' (etape 1).'
+- id: subif_vlan20
+  node: r1
+  cmd: ip -d link show eth1.20 2>/dev/null | grep -Ec "protocol 802.1Q +id 20"
+  expect: ^1$
+  points: 1
+  hint: 'Pareil pour le VLAN 20 : ''ip link add eth1.20 link eth1 type vlan id 20'' puis ''ip link set eth1.20 up'' (etape 1).'
+- id: addr_vlan10_vtysh
+  node: r1
+  cmd: vtysh -c "show running-config" | grep -c "ip address 192.168.10.254/24"
+  expect: ^1$
+  points: 2
+  hint: 'L''adresse du VLAN 10 doit être déclarée dans FRR : vtysh -c ''conf t'' -c ''interface eth1.10'' -c ''ip address 192.168.10.254/24'' (etape 2). C''est l''équivalent de ''interface eth1.10 / encapsulation
+    dot1Q 10 / ip address ...'' sur un vrai IOS Cisco.'
+- id: addr_vlan20_vtysh
+  node: r1
+  cmd: vtysh -c "show running-config" | grep -c "ip address 192.168.20.254/24"
+  expect: ^1$
+  points: 2
+  hint: Sous-interface eth1.20 déclarée dans FRR avec 'ip address 192.168.20.254/24' (etape 2).
+- id: h1_ping_h2
+  node: h1
+  cmd: ping -c2 -W2 192.168.20.1
+  expect: 0% packet loss
+  points: 3
+  hint: 'h1 doit joindre h2 a travers le routeur : h1 ip 192.168.10.1/24 avec route par defaut 192.168.10.254 ; h2 ip 192.168.20.1/24 avec route par defaut 192.168.20.254 (etape 3). Le routage inter-VLAN
+    ne marche que si les deux sous-interface et leurs adresses sont actives (etapes 1-2).'
+- id: write_memory
+  node: r1
+  cmd: grep -c "192.168.20.254" /etc/frr/zebra.conf
+  expect: ^1$
+  points: 1
+  hint: Sur Cisco on fait 'copy running-config startup-config' (ou 'write memory') ; ici vtysh -c 'write memory' doit creer /etc/frr/zebra.conf (mode traditional FRR) avec la config des adresses (etape
+    4).

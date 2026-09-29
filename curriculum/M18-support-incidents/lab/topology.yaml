@@ -1,0 +1,14 @@
+name: m18-incidents
+mgmt:
+  network: clab-m18
+  ipv4-subnet: 10.198.26.0/24
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netsys/labnode:2
+    cli:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    - endpoints: ["srv:eth1", "cli:eth1"]

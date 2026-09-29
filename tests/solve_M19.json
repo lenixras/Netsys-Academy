@@ -1,0 +1,21 @@
+{
+ "r1": [
+  "ip link set eth1 up",
+  "ip link add eth1.10 link eth1 type vlan id 10",
+  "ip link add eth1.20 link eth1 type vlan id 20",
+  "ip link set eth1.10 up",
+  "ip link set eth1.20 up",
+  "vtysh -c 'conf t' -c 'interface eth1.10' -c 'ip address 192.168.10.254/24' -c 'interface eth1.20' -c 'ip address 192.168.20.254/24' -c 'end'",
+  "vtysh -c 'write memory'"
+ ],
+ "h1": [
+  "ip addr add 192.168.10.1/24 dev eth1",
+  "ip link set eth1 up",
+  "ip route replace default via 192.168.10.254"
+ ],
+ "h2": [
+  "ip addr add 192.168.20.1/24 dev eth1",
+  "ip link set eth1 up",
+  "ip route replace default via 192.168.20.254"
+ ]
+}

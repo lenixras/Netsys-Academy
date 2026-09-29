@@ -1,0 +1,10 @@
+{
+  "h1": [
+    "ip route show default | awk '{print $3}' > /root/obs/gw_ipv4.txt",
+    "ip -o neigh get $(ip route show default | awk '{print $3}') dev eth0 | awk '{print $5}' > /root/obs/gw_mac.txt",
+    "ip -4 route show scope link dev eth0 | awk '{print $1}' > /root/obs/mgmt_prefix.txt",
+    "getent hosts atelier.m0.internal | awk '{print $1}' > /root/obs/dns_atelier.txt",
+    "awk '/^nameserver/{print $2; exit}' /etc/resolv.conf > /root/obs/resolver.txt",
+    "cat /sys/class/net/eth0/mtu > /root/obs/mtu.txt"
+  ]
+}

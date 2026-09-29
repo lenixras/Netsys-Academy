@@ -1,0 +1,28 @@
+checks:
+- id: slapd_listening
+  node: srv
+  cmd: ss -tln | grep -c "10.23.0.10:389"
+  expect: ^[1-9]$
+  points: 2
+  hint: 'slapd n''ecoute pas : ecrire /etc/ldap/slapd.conf (schemas core+cosine+inetorgperson, database mdb, suffix dc=lab23,dc=local, rootdn cn=admin,dc=lab23,dc=local, rootpw secret, directory /var/lib/ldap,
+    modulepath /usr/lib/ldap + moduleload back_mdb) puis ''slapd -u openldap -g openldap -f /etc/ldap/slapd.conf -h ldap://10.23.0.10:389/'' (etapes 1-2).'
+- id: base_searchable
+  node: cli
+  cmd: ldapsearch -H ldap://10.23.0.10 -x -b dc=lab23,dc=local -s base dn 2>&1 | grep -c "dc=lab23"
+  expect: ^[1-9]$
+  points: 2
+  hint: 'La racine doit exister : importer /root/base.ldif (ldapadd -H ldap://10.23.0.10 -x -D cn=admin,dc=lab23,dc=local -w secret -f /root/base.ldif). L''entree dc=lab23,dc=local est le point d''entree
+    de tout l''annuaire (etape 3).'
+- id: user_elev1
+  node: cli
+  cmd: 'ldapsearch -H ldap://10.23.0.10 -x -b dc=lab23,dc=local "(uid=elev1)" uid 2>&1 | grep -c "uid: elev1"'
+  expect: ^[1-9]$
+  points: 2
+  hint: 'L''utilisateur uid=elev1 doit etre present sous ou=People : verifier le ldif (objectClass inetOrgPerson) et ''ldapsearch -x -b dc=lab23,dc=local uid=elev1''.'
+- id: admin_bind
+  node: cli
+  cmd: 'ldapsearch -H ldap://10.23.0.10 -x -D cn=admin,dc=lab23,dc=local -w secret -b dc=lab23,dc=local dn 2>&1 | grep -c "result: 0 Success"'
+  expect: ^[1-9]$
+  points: 2
+  hint: 'Le compte admin doit pouvoir se connecter (bind) avec le rootpw : un ''Invalid credentials'' = rootpw different dans slapd.conf, ''Undefined attribute type'' = schemas core/cosine/inetorgperson
+    pas inclus.'

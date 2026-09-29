@@ -1,0 +1,82 @@
+questions:
+- q: "Dans containerlab, une topologie réseau est décrite dans :"
+  choices:
+    - "un fichier YAML"
+    - "un fichier TOML uniquement"
+    - "un graphe Graphviz seul"
+    - "un playbook Ansible"
+  answer: 0
+  points: 1
+  expl: "Dans containerlab la topologie (nœuds, images, liens) est déclarée dans un fichier YAML ; ce n'est ni du TOML, du Graphviz ni un playbook Ansible."
+- q: "Un labo versionné en Git apporte principalement :"
+  choices:
+    - "revues, historique et reproductibilité (CI)"
+    - "des licences par poste"
+    - "des VM KVM obligatoires"
+    - "un accès SaaS payant"
+  answer: 0
+  points: 1
+  expl: "Versionner un labo en Git rend les changements relisibles en revue, historisés et reproductibles, et permet de les rejouer automatiquement en CI."
+- q: "netlab sert à :"
+  choices:
+    - "générer des configs multi-vendeur depuis un inventaire"
+    - "générer du code Python applicatif"
+    - "créer des quiz Moodle"
+    - "capturer du trafic"
+  answer: 0
+  points: 1
+  expl: "netlab lit un inventaire et génère les configurations pour plusieurs fournisseurs à la fois, d'où son intérêt en contextes multi-vendeur ; il ne capture pas de trafic."
+- q: "Chaque lien d'une topologie containerlab est implémenté par :"
+  choices:
+    - "une paire veth entre network namespaces"
+    - "un câble physique"
+    - "un tunnel VXLAN obligatoire"
+    - "une VM KVM par bout"
+  answer: 0
+  points: 1
+  expl: "Chaque lien d'un labo containerlab est concrètement une paire d'interfaces veth reliant les network namespaces des conteneurs, simulant un câble point à point."
+- q: "La commande pour voir nœuds, liens et adresses d'un labo déployé :"
+  choices:
+    - "containerlab inspect -t topo.yml"
+    - "containerlab graph --open"
+    - "containerlab save"
+    - "docker network ls"
+  answer: 0
+  points: 1
+  expl: "containerlab inspect -t topo.yml liste les nœuds déployés, leurs liens et leurs adresses ; graph produit une carte, save un export des configurations."
+- q: "NETCONF transport typiquement ses messages sur :"
+  choices:
+    - "SSH (port 830) en XML"
+    - "UDP 161 en binaire"
+    - "TCP 23 en texte"
+    - "gRPC en protobuf"
+  answer: 0
+  points: 1
+  expl: "NETCONF transporte ses échanges XML par défaut sur le port SSH 830 ; UDP 161 relève de SNMP et TCP 23 du telnet."
+- q: "La télémétrie gNMI en streaming diffère du polling SNMP car :"
+  choices:
+    - "l'équipement pousse les données à la demande du collector"
+    - "elle exige une community string"
+    - "elle n'envoie que des traps"
+    - "elle ne fonctionne qu'en v3"
+  answer: 0
+  points: 1
+  expl: "En télémétrie gNMI (streaming) l'équipement pousse les données vers le collector selon l'abonnement, là où SNMP polling tire périodiquement l'état ; la community string est un concept SNMP v2c."
+- q: "Une CI réseau utile pour un labo containerlab inclut :"
+  choices:
+    - "lint du YAML, tests d'invariants et déploiement smoke test"
+    - "la compilation du noyau Linux"
+    - "un redémarrage de l'hôte de prod"
+    - "l'envoi des notes dans Moodle"
+  answer: 0
+  points: 1
+  expl: "Une CI réseau pour containerlab relit le YAML (lint), vérifie des invariants et déploie un smoke test, sans compiler le noyau ni redémarrer un équipement de production."
+- q: "Un `containerlab deploy` interrompu peut laisser :"
+  choices:
+    - "des nœuds/bridges orphelins à détruire (destroy --all)"
+    - "un fichier topo.yml corrompu"
+    - "des licences consommées"
+    - "rien : la commande est atomique"
+  answer: 0
+  points: 1
+  expl: "Un deploy coupé peut laisser des conteneurs, réseaux ou bridges orphelins ; destroy (voire destroy --all) nettoie ces ressources résiduelles."

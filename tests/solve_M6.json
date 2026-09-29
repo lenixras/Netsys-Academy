@@ -1,0 +1,13 @@
+{
+  "h1": ["ip addr add 10.10.10.10/24 dev eth1", "ip link set eth1 up", "ip route replace default via 10.10.10.1"],
+  "h2": ["ip addr add 10.10.20.10/24 dev eth1", "ip link set eth1 up", "ip route replace default via 10.10.20.1"],
+  "r1": [
+    "vtysh -c 'conf t' -c 'interface eth1' -c 'ip address 10.0.12.1/29' -c 'ip ospf network point-to-point' -c 'ip ospf area 0' -c 'exit' -c 'interface eth2' -c 'ip address 10.0.13.1/29' -c 'ip ospf network point-to-point' -c 'ip ospf area 0' -c 'exit' -c 'interface eth3' -c 'ip address 10.10.10.1/24' -c 'ip ospf area 0' -c 'exit' -c 'interface lo' -c 'ip address 2.2.2.2/32' -c 'ip ospf area 0' -c 'exit' -c 'router ospf' -c 'ospf router-id 2.2.2.2' -c 'end'"
+  ],
+  "r2": [
+    "vtysh -c 'conf t' -c 'interface eth1' -c 'ip address 10.0.12.2/29' -c 'ip ospf network point-to-point' -c 'ip ospf area 0' -c 'exit' -c 'interface eth2' -c 'ip address 10.0.23.2/29' -c 'ip ospf network point-to-point' -c 'ip ospf area 0' -c 'exit' -c 'interface lo' -c 'ip address 3.3.3.3/32' -c 'ip ospf area 0' -c 'exit' -c 'router ospf' -c 'ospf router-id 3.3.3.3' -c 'end'"
+  ],
+  "r3": [
+    "vtysh -c 'conf t' -c 'interface eth1' -c 'ip address 10.0.23.3/29' -c 'ip ospf network point-to-point' -c 'ip ospf area 0' -c 'exit' -c 'interface eth2' -c 'ip address 10.0.13.3/29' -c 'ip ospf network point-to-point' -c 'ip ospf area 0' -c 'exit' -c 'interface eth3' -c 'ip address 10.10.20.1/24' -c 'ip ospf area 0' -c 'exit' -c 'interface lo' -c 'ip address 4.4.4.4/32' -c 'ip ospf area 0' -c 'exit' -c 'router ospf' -c 'ospf router-id 4.4.4.4' -c 'end'"
+  ]
+}

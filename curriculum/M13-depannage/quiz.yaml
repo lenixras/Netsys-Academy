@@ -1,0 +1,109 @@
+questions:
+- q: "Quelle est la première commande à lancer quand une interface n'est pas joignable ?"
+  choices:
+    - "ip -br link (état administratif et porteur)"
+    - "tcpdump -i any"
+    - "nft list ruleset"
+    - "traceroute vers la passerelle"
+  answer: 0
+  points: 1
+  expl: "On vérifie d'abord la couche 1/2 locale : ip -br link montre l'état administratif de l'interface et la présence du porteur (up/up), sans quoi rien de plus loin n'a de sens."
+- q: "Un ping vers la passerelle par défaut qui échoue implique que :"
+  choices:
+    - "le problème est local ou sur le segment direct, inutile de tester plus loin"
+    - "le serveur distant est éteint"
+    - "la table DNS est vide"
+    - "le MTU est trop petit"
+  answer: 0
+  points: 1
+  expl: "Si la passerelle immédiate ne répond pas, le problème est local (câble, VLAN, adressage, ARP) ou sur le segment direct : inutile de chercher plus loin tant que ce premier saut échoue."
+- q: "From 10.13.2.1 icmp_seq=1 Destination Net Unreachable signifie :"
+  choices:
+    - "un routeur intermédiaire n'a pas de route (ou une route blackhole/unreach)"
+    - "la destination est éteinte"
+    - "le service refuse la connexion"
+    - "une tempête de broadcast"
+  answer: 0
+  points: 1
+  expl: "L'erreur ICMP Destination Net Unreachable provient d'un routeur intermédiaire sans route (ou avec une route unreachable) vers le réseau destino ; la machine cible peut très bien être allumée."
+- q: "Une timeout complet (aucun message) plutôt qu'un rejet ICMP indique plutôt :"
+  choices:
+    - "un drop silencieux ou une route de retour manquante"
+    - "un port fermé"
+    - "une adresse MAC dupliquée"
+    - "un DNS en échec"
+  answer: 0
+  points: 1
+  expl: "Un silence total (timeout) évoque un drop silencieux par un pare-feu ou une route de retour absente, alors qu'un port fermé renverrait un rejet explicite (RST/ICMP)."
+- q: "Que révèle ip route get 10.13.3.20 ?"
+  choices:
+    - "la décision exacte de la FIB : interface, passerelle, adresse source"
+    - "les compteurs de paquets de la route"
+    - "le RTT mesuré vers la destination"
+    - "la liste des ARP voisins"
+  answer: 0
+  points: 1
+  expl: "ip route get simule la décision de la FIB pour une destination donnée : interface choisie, passerelle utilisée et adresse source retenue, exactement ce que la machine va faire."
+- q: "Une route blackhole installée sur un préfixe produit :"
+  choices:
+    - "la chute silencieuse des paquets correspondant à ce préfixe"
+    - "une priorisation du trafic"
+    - "un rejet systématique avec ICMP port-unreachable"
+    - "aucun effet, la route est ignorée"
+  answer: 0
+  points: 1
+  expl: "Une route blackhole abandonne silencieusement les paquets vers ce préfixe, sans générer d'ICMP de retour, contrairement à une route unreachable qui elle renvoie une erreur."
+- q: "Un hôte configuré en 10.13.3.20/25 sur un segment en /24 :"
+  choices:
+    - "ping son voisin direct mais n'a plus de route vers les autres sous-réseaux"
+    - "ne pingue plus personne du tout"
+    - "provoque une boucle de routage"
+    - "désactive son ARP"
+  answer: 0
+  points: 1
+  expl: "Avec un masque trop strict (/25 sur un segment en /24) l'hôte ne considère plus la moitié du réseau comme locale et perd la route vers les autres sous-réseaux, tout en atteignant encore certains voisins directs."
+- q: "Connection refused (TCP) alors qu'un ping passe signifie :"
+  choices:
+    - "le paquet atteint l'hôte, qui n'a rien à l'écoute sur ce port"
+    - "un pare-feu droppe le trafic"
+    - "le serveur est éteint"
+    - "une panne DNS"
+  answer: 0
+  points: 1
+  expl: "Connection refused correspond à un RST reçu : le paquet atteint bien l'hôte (le ping passe) mais aucun service n'écoute sur ce port. Un pare-feu qui droppe aurait donné un timeout, pas un refus."
+- q: "Pourquoi lancer tcpdump sur les deux interfaces d'un routeur ?"
+  choices:
+    - "distinguer une panne locale (le paquet entre mais ne sort pas) d'une panne en aval"
+    - "mesurer le débit"
+    - "recharger la configuration"
+    - "vérifier la table ARP"
+  answer: 0
+  points: 1
+  expl: "Capturer des deux côtés du routeur localise la panne : si le paquet entre mais ne ressort pas le problème est sur l'équipement (route, NAT, filtrage), sinon il faut chercher en aval."
+- q: "tracepath s'arrête au 4e saut sans réponse. Conclusion correcte :"
+  choices:
+    - "le saut 4 ne génère pas de TTL-dépassé : panne ou filtrage ICMP, à confirmer ailleurs"
+    - "le saut 4 est nécessairement cassé"
+    - "la destination est nécessairement en panne"
+    - "le chemin contient une boucle"
+  answer: 0
+  points: 1
+  expl: "Un saut muet n'est pas forcément cassé : beaucoup d'équipements ne génèrent pas le TTL-dépassé ou filtrent ICMP, donc la conclusion reste à confirmer ailleurs (par exemple en testant la destination)."
+- q: "Quel contenu attend-on dans un post-mortem d'incident ?"
+  choices:
+    - "symptôme, cause racine, correction, impact, mesure préventive"
+    - "uniquement la commande de correction"
+    - "la liste des personnes concernées"
+    - "les journaux complets de l'équipement"
+  answer: 0
+  points: 1
+  expl: "Un post-mortem utile documente le symptôme, la cause racine, la correction apportée, l'impact et surtout une mesure préventive, afin de ne pas revivre le même incident."
+- q: "Dans la méthode en couches, on : "
+  choices:
+    - "remonte à partir du premier maillon défaillant, en validant ce qui précède"
+    - "teste d'abord la couche applicative, la plus visible"
+    - "corrige plusieurs soupçons à la fois pour gagner du temps"
+    - "redémarre l'équipement central en premier"
+  answer: 0
+  points: 1
+  expl: "La méthode en couches part du bas (physique, adressage) et ne monte qu'après avoir validé chaque maillon, ce qui isole le premier point de défaillance plutôt que de corriger au hasard."

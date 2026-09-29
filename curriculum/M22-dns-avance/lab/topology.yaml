@@ -1,0 +1,22 @@
+name: m22-dns
+mgmt:
+  network: clab-m22
+  ipv4-subnet: 10.198.30.0/24
+topology:
+  nodes:
+    auth:
+      kind: linux
+      image: netsys/labnode:3
+    rec:
+      kind: linux
+      image: netsys/labnode:3
+    cli:
+      kind: linux
+      image: netsys/labnode:3
+  links:
+  - endpoints:
+    - cli:eth1
+    - rec:eth1
+  - endpoints:
+    - rec:eth2
+    - auth:eth1

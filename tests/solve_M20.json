@@ -1,0 +1,9 @@
+{
+ "r1": [
+  "printf 'interface eth1 {\\n  AdvSendAdvert on;\\n  prefix 2001:db8:acad:1::/64 {};\\n};\\n' > /etc/radvd.conf",
+  "radvd"
+ ],
+ "h1": [
+  "for i in 1 2 3 4 5 6; do ip -6 route add 2001:db8:acad:2::/64 via 2001:db8:acad:1::1 && break; sleep 2; done"
+ ]
+}

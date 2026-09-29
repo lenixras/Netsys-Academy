@@ -1,0 +1,34 @@
+checks:
+- id: auth_allows_transfer
+  node: auth
+  cmd: grep -c "10.22.1.2" /root/named.conf
+  expect: ^[1-9]$
+  points: 1
+  hint: 'Le maitre refuse le transfert vers le secondaire : editer /root/named.conf et remplacer ''allow-transfer { none; };'' par ''allow-transfer { 10.22.1.2; };'' puis recharger : pkill -x named; named
+    -c /root/named.conf -g > /root/named.log 2>&1 & (etape 1).'
+- id: named_rec_up
+  node: rec
+  cmd: pgrep -x named
+  points: 2
+  hint: 'Le resolviseur secondaire ne tourne pas : ecrire /root/named.conf (options recursion yes; allow-recursion { any; }; directory /var/cache/bind + les deux zones ''type slave'' vers master 10.22.1.1)
+    puis named -c /root/named.conf -g > /root/named.log 2>&1 & (etape 2).'
+- id: slave_db_sync
+  node: rec
+  cmd: grep -c web /var/cache/bind/lab22.local.slave 2>/dev/null || grep -rc web /var/cache/bind/
+  expect: ^[1-9]
+  points: 2
+  hint: 'Le transfert AXFR n''a rien ecrit : le nom du fichier de zone ''type slave'' doit etre relatif (lab22.local.slave), le maitre doit autoriser le transfert (check precedent) et le serial doit concorder.
+    Verifier /var/cache/bind/ puis named.log.'
+- id: dig_fwd_via_rec
+  node: cli
+  cmd: dig @10.22.0.2 web.lab22.local +short | grep -c "^10.22.0.99$"
+  expect: ^1$
+  points: 2
+  hint: 'rec doit repondre 10.22.0.99 pour web.lab22.local : tester d''abord ''named-checkconf /root/named.conf'', verifier que les deux zones slave sont declarees et qu''aucune erreur AXFR ne figure dans
+    /root/named.log (etape 2).'
+- id: dig_rev_via_rec
+  node: cli
+  cmd: dig @10.22.0.2 -x 10.22.0.99 +short | grep -c "web.lab22.local"
+  expect: ^1$
+  points: 2
+  hint: La zone inverse 0.22.10.in-addr.arpa doit aussi etre dupliquee en slave sur rec (deuxieme bloc zone dans /root/named.conf, fichier db distinct).

@@ -1,0 +1,17 @@
+id: M3
+title: "Linux administrateur"
+wave: 1
+prereqs: ['M2']
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 30
+  setup:
+  - node: admin1
+    cmd: sysctl -w net.ipv4.ip_forward=0
+validation:
+  quiz_min_score: 70
+  lab_required: true

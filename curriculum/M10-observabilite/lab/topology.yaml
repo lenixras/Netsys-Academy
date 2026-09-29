@@ -1,0 +1,15 @@
+name: m10-obs
+mgmt:
+  network: clab-m10
+  ipv4-subnet: 10.198.13.0/24
+topology:
+  nodes:
+    agent:
+      kind: linux
+      image: netsys/labnode:2
+    mon:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+    # lien d'observabilité dédié : 10.10.100.0/24 (.1 = agent, .2 = mon)
+    - endpoints: ["agent:eth1", "mon:eth1"]

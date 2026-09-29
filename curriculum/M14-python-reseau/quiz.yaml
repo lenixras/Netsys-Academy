@@ -1,0 +1,91 @@
+questions:
+- q: "Quel module standard manipule réseaux et adresses IP/CIDR en Python ?"
+  choices:
+    - "ipaddress"
+    - "socketonly"
+    - "netcalc"
+    - "networking"
+  answer: 0
+  points: 1
+  expl: "Le module standard ipaddress manipule adresses IPv4/IPv6 et réseaux CIDR sans dépendance externe ; les autres noms cités n'existent pas dans la bibliothèque standard."
+- q: "ipaddress.ip_network('10.0.0.0/24').hosts() renvoie :"
+  choices:
+    - "les 254 adresses utilisables (sans réseau ni broadcast)"
+    - "les 256 adresses du réseau"
+    - "uniquement l'adresse réseau"
+    - "la passerelle par défaut"
+  answer: 0
+  points: 1
+  expl: "La méthode hosts() exclut l'adresse réseau et l'adresse de broadcast, donc un /24 donne bien 254 adresses utilisables."
+- q: "Pour un GET HTTP minimaliste sans dépendance externe, on utilise :"
+  choices:
+    - "urllib.request.urlopen"
+    - "http.client seulement"
+    - "socket.send"
+    - "os.system(curl)"
+  answer: 0
+  points: 1
+  expl: "urllib.request.urlopen fait partie de la bibliothèque standard et suffit pour un GET HTTP sans ajout de dépendance ; http.client est plus bas niveau et os.system suppose curl installé."
+- q: "urlopen sur une réponse 404 :"
+  choices:
+    - "lève urllib.error.HTTPError (code dans err.code)"
+    - "retourne toujours None"
+    - "bloque indéfiniment"
+    - "retourne 200"
+  answer: 0
+  points: 1
+  expl: "Par défaut urlopen lève une HTTPError sur un code d'erreur HTTP, le code étant disponible dans err.code ; elle ne bloque pas et ne renvoie pas 200."
+- q: "Avec paramiko, l'objet qui interagit avec un équipement SSH (envoie des commandes, lit les prompts) est :"
+  choices:
+    - "un InvocationChannel obtenu via client.invoke_shell()"
+    - "un Socket brut"
+    - "une subprocess local"
+    - "un telnetlib.Telnet"
+  answer: 0
+  points: 1
+  expl: "invoke_shell() ouvre un channel interactif sur lequel on envoie des commandes et on lit les prompts d'un équipement ; un socket brut ou telnetlib ne gèrent pas ce SSH interactif."
+- q: "netmiko se distingue de paramiko par :"
+  choices:
+    - "des gestionnaires par fournisseur (Cisco, Juniper…) qui gèrent les prompts"
+    - "un support exclusif d'API REST"
+    - "l'absence de SSH"
+    - "le fait qu'il soit écrit en C"
+  answer: 0
+  points: 1
+  expl: "netmiko s'appuie sur paramiko mais ajoute des gestionnaires par fournisseur qui connaissent les prompts et les commandes d'accès, ce qui simplifie l'automatisation CLI multi-vendeur."
+- q: "re.sub(r'[^0-9a-fA-F]', '', mac) sur une MAC sert à :"
+  choices:
+    - "retirer tous les séparateurs pour normaliser"
+    - "valider un hostname"
+    - "convertir en IP"
+    - "chiffrer l'adresse"
+  answer: 0
+  points: 1
+  expl: "Le motif retire tout caractère non hexadécimal, donc les séparateurs (: - .) disparaissent et la MAC est normalisée en une suite continue de chiffres hexadécimaux."
+- q: "Un test pytest échoue si :"
+  choices:
+    - "une assert est fausse ou une exception remonte"
+    - "le fichier s'appelle test_*.py"
+    - "pytest est installé en version récente"
+    - "le test print() du texte"
+  answer: 0
+  points: 1
+  expl: "Un test pytest échoue si une assertion est fausse ou si une exception non gérée remonte ; un print() ou le nom du fichier ne provoquent pas d'échec."
+- q: "Pour parser une sortie CLI (ex. « show ip route ») de façon maintenable, la bonne pratique est :"
+  choices:
+    - "regex nommées + structures de données, ou ttp/TextFSM"
+    - "if/elif sur toute la longueur du texte"
+    - "recopier la sortie dans le code"
+    - "couper toujours les 3 premières lignes"
+  answer: 0
+  points: 1
+  expl: "Des regex nommées appliquées ligne à ligne, ou des outils dédiés comme ttp et TextFSM, produisent un parseur lisible et maintenable, contrairement à une cascade d'if/elif fragiles."
+- q: "La différence entre requête API REST et CLI SSH en automatisation :"
+  choices:
+    - "REST renvoie des données structurées (JSON), la CLI du texte à parser"
+    - "REST est toujours plus lent"
+    - "la CLI est structurée, REST du texte"
+    - "aucune différence"
+  answer: 0
+  points: 1
+  expl: "Une API REST renvoie du JSON déjà structuré que l'on exploite directement, tandis que la CLI livre du texte brut qu'il faut d'abord parser."

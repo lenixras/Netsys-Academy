@@ -1,0 +1,7 @@
+{
+ "mx": [
+  "postconf -e 'myhostname = mx.lab24.local' && postconf -e 'mydestination = mx.lab24.local, localhost' && postconf -e 'inet_interfaces = all' && postconf -e 'mynetworks = 10.24.0.0/24' && newaliases && postfix start",
+  "echo 'sujet lab24' | sendmail alice@mx.lab24.local",
+  "echo ZG92ZWNvdF9jb25maWdfdmVyc2lvbiA9IDIuNC4wCmRvdmVjb3Rfc3RvcmFnZV92ZXJzaW9uID0gMi40LjAKcHJvdG9jb2xzID0gaW1hcApsaXN0ZW4gPSAxMC4yNC4wLjEwCnNzbCA9IG5vCmF1dGhfYWxsb3dfY2xlYXJ0ZXh0ID0geWVzCmF1dGhfbWVjaGFuaXNtcyA9IHBsYWluIGxvZ2luCm1haWxfZHJpdmVyID0gbWJveAptYWlsX2luYm94X3BhdGggPSAvdmFyL21haWwvJXUKbWFpbF9wYXRoID0gL3Zhci9tYWlsLyV1CnBhc3NkYiBwYW0gewogIGRyaXZlciA9IHBhbQp9CnVzZXJkYiBwYXNzd2QgewogIGRyaXZlciA9IHBhc3N3ZAp9Cg== | base64 -d > /etc/dovecot/dovecot.conf && dovecot"
+ ]
+}

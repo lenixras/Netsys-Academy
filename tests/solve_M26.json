@@ -1,0 +1,11 @@
+{
+ "srv": [
+  "dnsmasq --conf-file=/root/dnsmasq.conf"
+ ],
+ "rtr": [
+  "dhcrelay 10.26.1.10"
+ ],
+ "cli": [
+  "dhclient eth1"
+ ]
+}

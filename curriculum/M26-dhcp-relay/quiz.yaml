@@ -1,0 +1,55 @@
+questions:
+- q: Pourquoi un client DHCP sans IP ne peut-il pas joindre un serveur sur un autre sous-réseau ?
+  choices:
+  - Le DNS est mort
+  - Il diffuse en broadcast, qu'un routeur ne relaie pas
+  - Le MTU est nul
+  - Il attend le DHCP INFORM
+  answer: 1
+  points: 1
+  expl: Avant d'avoir une adresse, le client ne peut que parler en broadcast local — d'où le relais.
+- q: 'Le champ giaddr dans la requête DHCP relayée contient :'
+  choices:
+  - La MAC du client
+  - L'IP de l'interface du relais côté client
+  - Le serveur
+  - Le bail
+  answer: 1
+  points: 1
+  expl: 'giaddr identifie le sous-réseau d''origine : le serveur choisit le pool correspondant.'
+- q: 'Sans relais, la solution naïve (et coûteuse) est :'
+  choices:
+  - Un DHCP par sous-réseau
+  - NAT
+  - DNS dynamique
+  - Baux statiques
+  answer: 0
+  points: 1
+  expl: On duplique le serveur sur chaque LAN — le relais centralise précisément pour l'éviter.
+- q: 'DORA signifie :'
+  choices:
+  - Discover, Offer, Request, Ack
+  - Domain, Origin, Relay, Address
+  - Default, Option, Route, ARP
+  - DHCP Over RDMA
+  answer: 0
+  points: 1
+  expl: Le dialogue complet d'un bail DHCP.
+- q: 'L''option DHCP 3 porte :'
+  choices:
+  - Le nom de domaine
+  - La passerelle par défaut
+  - Le serveur NTP
+  - Le bail
+  answer: 1
+  points: 1
+  expl: 'Option 3 = router : la default route que dhclient installe.'
+- q: 'Le port UDP du serveur DHCP (messages clients) est :'
+  choices:
+  - '67'
+  - '68'
+  - '53'
+  - '520'
+  answer: 0
+  points: 1
+  expl: 67 côté serveur, 68 côté client — ss -uln | grep :67 est votre preuve de service vivant.

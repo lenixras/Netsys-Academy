@@ -1,0 +1,23 @@
+id: M25
+title: 'Monitoring : Prometheus qui surveille un hôte'
+wave: 3
+prereqs:
+- M3
+- M10
+status: full
+lab:
+  mode: topology
+  dir: lab
+  topo: topology.yaml
+  checks: checks.yaml
+  ttl_min: 30
+  setup:
+  - node: mon
+    cmd: ip addr add 10.25.0.10/24 dev eth1 && ip link set eth1 up && mkdir -p /var/lib/prometheus
+  - node: tgt
+    cmd: ip addr add 10.25.0.20/24 dev eth1 && ip link set eth1 up
+  - node: mon
+    cmd: 'echo ''Objectif: node_exporter sur tgt:9100, prometheus sur mon:9090, job nomme tgt.'' > /root/CONSIGNE.txt'
+validation:
+  quiz_min_score: 70
+  lab_required: true

@@ -1,0 +1,36 @@
+checks:
+- id: dns_named_up
+  node: srv
+  cmd: 'pgrep -x named'
+  points: 1
+  hint: "named (bind9) ne tourne pas sur srv, et il n'y a pas de systemd : il se lance a la main. Complete d'abord la zone (cp des modeles puis sed -i 's|A_REMPLACER|10.1.41.10|' /root/db.lab4.local), valide avec named-checkconf et named-checkzone, puis lance named -c /root/named.conf -g > /root/named.log 2>&1 & et regarde /root/named.log s'il refuse de demarrer (etape 1)."
+- id: dns_resolution
+  node: client1
+  cmd: 'dig @10.1.40.1 web.lab4.local +short'
+  expect: '10\.1\.41\.10'
+  points: 2
+  hint: "dig doit recevoir de srv (10.1.40.1) l'enregistrement A de web.lab4.local pointing vers 10.1.41.10, l'IP de client1 : verifie que named tourne sur srv (etape 1) et que /root/db.lab4.local contient bien cette IP a la place de A_REMPLACER. Si dig ne repond pas du tout, teste d'abord la connectivite ping 10.1.40.1 depuis client1 (etape 0)."
+- id: dnsmasq_config_valid
+  node: srv
+  cmd: 'dnsmasq --test --conf-file=/root/dnsmasq.conf'
+  expect: 'syntax check OK'
+  points: 1
+  hint: "La syntaxe de /root/dnsmasq.conf est refusee (ou le fichier n'existe pas). Repars du modele : cp /root/dnsmasq.conf.template /root/dnsmasq.conf, remplace RESEAU,DERNIERERESEAU par 10.1.40.100,10.1.40.150,255.255.255.0,8h et PASSERELLE par 10.1.40.254, puis relance dnsmasq --test --conf-file=/root/dnsmasq.conf qui doit afficher syntax check OK (etape 2)."
+- id: dhcp_port67_listening
+  node: srv
+  cmd: 'ss -uln | grep :67'
+  expect: ':67\s'
+  points: 2
+  hint: "Rien n'ecoute en UDP sur le port 67 (DHCP) : dnsmasq doit etre LANCE, pas seulement valide. Apres un dnsmasq --test concluant, demarre-le avec dnsmasq --conf-file=/root/dnsmasq.conf (il passe en tache de fond) puis verifie avec ss -uln | grep :67. Le port=0 de la config est normal : seul le DHCP tourne, le DNS 53 etant deja pris par named (etape 2)."
+- id: ntp_sync_client1
+  node: client1
+  cmd: 'chronyc -n sources'
+  expect: '\^[\*\+] 10\.1\.40\.1'
+  points: 2
+  hint: "chronyd doit tourner des deux cotes (chronyd -f /root/chrony.conf, precede de mkdir -p /var/lib/chrony) et le sondage prend quelques secondes. Sur srv la config declare local stratum 10 ; sur client1 attends ~10 s puis lance chronyc -a makestep et chronyc -n sources : la ligne 10.1.40.1 doit porter ^* ou ^+ (etape 3)."
+- id: ssh_key_login
+  node: client1
+  cmd: 'ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=5 svc@10.1.40.1 hostname'
+  expect: '^srv$'
+  points: 2
+  hint: "La connexion par cle echoue : avec BatchMode=yes le mot de passe n'est pas une option. Il faut (1) sshd lance sur srv : mkdir -p /run/sshd && /usr/sbin/sshd ; (2) la cle publique de client1 generee par ssh-keygen -t ed25519 -N '' -f /root/.ssh/id_ed25519 recopiee ligne complete dans /home/svc/.ssh/authorized_keys sur srv via l'editeur integre (etape 4)."

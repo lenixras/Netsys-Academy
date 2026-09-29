@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}{{ mod.id }} — {{ mod.title }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/xterm.css">
+{% endblock %}
+{% block content %}
+{% set niveaux = {0: "🟢 Débutant", 1: "🟢 Débutant+", 2: "🟡 Intermédiaire", 3: "🟠 Avancé", 4: "🔴 Expert"} %}
+<h1>{{ mod.id }} — {{ mod.title }}</h1>
+<p class="muted">Niveau {{ niveaux[mod.wave] }} (vague {{ mod.wave }}) · prérequis : {{ mod.prereqs | join(", ") }} ·
+  {{ "labo conteneurs, purge auto après " ~ mod.lab.ttl_min ~ " min d'inactivité"
+  if mod.lab.mode == "topology" else "exercices sans environnement" }}
+  {% if quiz_n %} · quiz : {{ quiz_n }} questions{% endif %}</p>
+
+<div class="tabs">
+  <button data-tab="cours" class="on">📖 Cours</button>
+  <button data-tab="quiz">{% if mod.lab.mode == "drills" %}✏️ Exercices{% else %}❓ Quiz{% endif %}</button>
+  {% if mod.lab.mode == "topology" %}<button data-tab="labo">🧪 Labo</button>{% endif %}
+  <button data-tab="scenario">🎯 Scénario</button>
+</div>
+
+<section id="tab-cours" class="tab">
+  {{ theory | safe }}
+  <p class="cours-cta">
+    <button id="go-pratique">{% if mod.lab.mode == "drills" %}✏️ Faire les exercices{% else %}🧪 Passer au labo{% endif %}</button>
+    <button id="go-scenario" class="mini">🎯 Voir le scénario</button>
+    <span class="muted">Même module, même progression : cours → pratique → vérification.</span>
+  </p>
+</section>
+
+<section id="tab-quiz" class="tab" hidden>
+  {% if problems %}
+  <form id="drill-form">
+    <h2>Exercices — subnetting</h2>
+    <p class="muted">Réponds CIDR ou adresse (ex. <code>192.168.10.0/24</code>), puis « Vérifier ».</p>
+    {% for p in problems %}
+    <label class="drill">{{ p.prompt }}
+      <input name="{{ p.id }}" autocomplete="off" spellcheck="false"></label>
+    {% endfor %}
+    <button type="button" id="verify">Vérifier mes réponses</button>
+  </form>
+  {% else %}
+  <div id="quiz-box"><p class="muted">Chargement du quiz…</p></div>
+  {% endif %}
+  <div id="results" hidden></div>
+</section>
+
+{% if mod.lab.mode == "topology" %}
+<section id="tab-labo" class="tab" hidden>
+  <div id="actions">
+    <button id="launch">▶ Lancer le labo</button>
+    <button id="destroy" disabled>✕ Détruire</button>
+    <button id="verify">✔ Vérifier mes configs</button>
+    <span id="session-state" class="muted"></span>
+  </div>
+
+  <h2>Topologie <span class="muted">(glisser = déplacer · clic = terminal)</span></h2>
+  <p class="muted legend">💻 PC · 🖥 serveur · 🔀 switch · 📡 routeur</p>
+  <svg id="topo" viewBox="0 0 760 320"></svg>
+  <button id="topo-edit-btn" disabled>Modifier la topologie</button>
+  <div id="topo-edit" hidden>
+    <p class="muted">⚠️ Appliquer recrée le labo : les configs des machines sont remises à zéro.</p>
+    <h3>Nœuds</h3>
+    <div id="node-list"></div>
+    <div class="row">
+      <input id="nn-name" placeholder="nom (ex: sw3)" size="12">
+      <select id="nn-kind"><option value="linux">linux</option><option value="frr">frr</option></select>
+      <select id="nn-image">
+        <option value="netsys/labnode:2">netsys/labnode:2 (complet)</option>
+        <option value="netsys/labnode:3">netsys/labnode:3 (services: ldap/mail/v6/mon)</option>
+        <option value="netsys/labnode:1">netsys/labnode:1 (léger)</option>
+        <option value="netsys/frrlab:1">netsys/frrlab:1 (ospf)</option>
+        <option value="netsys/frrlab:2">netsys/frrlab:2 (bgp)</option>
+        <option value="frrouting/frr:latest">frrouting/frr:latest</option>
+      </select>
+      <button id="topo-add-node">+ nœud</button>
+      <button id="topo-wire">🔌 Câbler</button>
+    </div>
+    <h3>Liens</h3>
+    <div id="link-list"></div>
+    <div class="row">
+      <select id="ln-a"></select><input id="ln-a-if" placeholder="eth1" size="6">
+      <span>↔</span>
+      <select id="ln-b"></select><input id="ln-b-if" placeholder="eth1" size="6">
+      <button id="topo-add-link">+ lien</button>
+    </div>
+    <div class="row"><button id="topo-apply">Appliquer la topologie</button>
+      <span id="topo-msg" class="muted"></span></div>
+  </div>
+
+  <details id="tools-wrap" class="needs-session">
+    <summary>🔍 Commande rapide (hors terminal)</summary>
+    <div class="row">
+      <select id="tool-node"></select>
+      <input id="tool-cmd" placeholder="ex: ip -br a" size="50">
+      <button id="tool-run">Exécuter</button>
+    </div>
+    <pre id="tool-out" hidden></pre>
+  </details>
+
+  <details class="needs-session">
+    <summary>📝 Éditeur de fichiers de configuration</summary>
+    <div class="row">
+      <label>nœud <select id="ed-node"></select></label>
+      <label>fichier <input id="ed-path" size="40" value="/root/config.txt"></label>
+      <button id="ed-load">Ouvrir</button><button id="ed-save">Enregistrer</button>
+      <span id="ed-state" class="muted"></span>
+    </div>
+    <textarea id="ed-body" rows="10" cols="80" spellcheck="false"></textarea>
+  </details>
+
+  <div id="terms"></div>
+  <div id="results" hidden></div>
+</section>
+{% endif %}
+
+<section id="tab-scenario" class="tab" hidden>
+  <article class="scenario">{{ scenario | safe }}</article>
+</section>
+
+<script>
+const LAB = {{ mod.id | tojson }}, MODE = {{ mod.lab.mode | tojson }}, SID = {{ (session.id if session else None) | tojson }};
+</script>
+{% endblock %}
+{% block scripts %}
+<script src="/static/xterm.js"></script>
+<script src="/static/app.js"></script>
+{% endblock %}

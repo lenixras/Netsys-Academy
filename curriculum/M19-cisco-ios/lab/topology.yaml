@@ -1,0 +1,28 @@
+name: m19-ios
+mgmt:
+  network: clab-m19
+  ipv4-subnet: 10.198.27.0/24
+topology:
+  nodes:
+    sw:
+      kind: linux
+      image: netsys/labnode:2
+    r1:
+      kind: linux
+      image: netsys/frrlab:1
+    h1:
+      kind: linux
+      image: netsys/labnode:2
+    h2:
+      kind: linux
+      image: netsys/labnode:2
+  links:
+  - endpoints:
+    - h1:eth1
+    - sw:eth1
+  - endpoints:
+    - h2:eth1
+    - sw:eth2
+  - endpoints:
+    - sw:eth3
+    - r1:eth1

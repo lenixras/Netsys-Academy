@@ -1,0 +1,46 @@
+questions:
+- q: "Que fait TCP à cwnd lors d'une perte détectée par triple ACK ?"
+  choices:
+    - "Il le réduit (fast recovery)"
+    - "Il le double"
+    - "Il ne le change pas"
+    - "Il ferme la connexion"
+  answer: 0
+  points: 1
+  expl: "Un triple ACK signale un trou dans la séquence : TCP interprète cela comme une congestion, réduit cwnd (environ de moitié) et passe en fast recovery pour retransmettre sans repartir de zéro."
+- q: "La fenêtre de réception (rwnd) est annoncée par :"
+  choices:
+    - "le récepteur, dans le segment ACK"
+    - "l'émetteur, dans le SYN uniquement"
+    - "le routeur intermédiaire"
+    - "l'application via socketopt"
+  answer: 0
+  points: 1
+  expl: "C'est le récepteur qui indique dans chaque ACK l'espace libre restant dans son buffer ; l'émetteur ne doit jamais envoyer au-delà de rwnd, sous peine de faire déborder la mémoire de la cible."
+- q: "tc netem sert à :"
+  choices:
+    - "injecter latence, perte, gigue et désordre"
+    - "mesurer le débit réel"
+    - "capturer des paquets"
+    - "filtrer pare-feu"
+  answer: 0
+  points: 1
+  expl: "netem est une discipline de qdisc qui émule un réseau dégradé : latence, perte, gigue et réordonnancement, pour tester le comportement des protocoles dans des conditions réalistes."
+- q: "Un blackhole PMTUD survient quand :"
+  choices:
+    - "les ICMP 'frag needed' sont filtrés"
+    - "le MTU est identique partout"
+    - "TCP désactive la fenêtre"
+    - "ARP est statique"
+  answer: 0
+  points: 1
+  expl: "PMTUD dépend des ICMP « fragmentation needed » pour apprendre le MTU du chemin ; s'ils sont filtrés par un pare-feu, l'émetteur continue d'envoyer des paquets trop gros, qui sont perdus en silence."
+- q: "Le BDP (bandwidth-delay product) est :"
+  choices:
+    - "débit × latence, soit les octets en vol possibles"
+    - "la taille d'une trame"
+    - "le nombre de voisins OSPF"
+    - "la fenêtre DNS"
+  answer: 0
+  points: 1
+  expl: "BDP = débit × délai : c'est le volume d'octets que le lien peut contenir en vol ; la fenêtre TCP doit l'atteindre pour saturer le lien, sinon le débit réel reste inférieur au débit physique."

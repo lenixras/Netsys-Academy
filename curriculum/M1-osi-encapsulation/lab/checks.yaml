@@ -1,0 +1,35 @@
+# Checks M1 — artefacts (/root/resp/*.txt) comparés à l'analyse tshark VIVANTE des pcap.
+# Chaque check relit le pcap avec tshark dans le nœud : la valeur attendue n'est jamais
+# codée en dur, elle est recalculée à partir de la capture réellement déposée.
+# test -s <f> garantit l'existence d'un artefact non vide avant comparaison.
+checks:
+- id: tcp_syn_count
+  node: h1
+  cmd: test -s /root/resp/syn.txt -a $(cat /root/resp/syn.txt) = $(tshark -r /root/cap_tcp.pcap -Y tcp.flags.syn==1 -Y tcp.flags.ack==0 | wc -l)
+  points: 1
+  hint: "Ce check compte les trames SYN sans ACK du handshake TCP. Ecris dans /root/resp/syn.txt le resultat de tshark -r /root/cap_tcp.pcap -Y tcp.flags.syn==1 -Y tcp.flags.ack==0 | wc -l."
+- id: tcp_synack_count
+  node: h1
+  cmd: test -s /root/resp/synack.txt -a $(cat /root/resp/synack.txt) = $(tshark -r /root/cap_tcp.pcap -Y tcp.flags.syn==1 -Y tcp.flags.ack==1 | wc -l)
+  points: 1
+  hint: "Le 2e paquet du handshake est SYN plus ACK. Ecris dans /root/resp/synack.txt le resultat de tshark -r /root/cap_tcp.pcap -Y tcp.flags.syn==1 -Y tcp.flags.ack==1 | wc -l."
+- id: tcp_handshake_seq
+  node: h1
+  cmd: test -s /root/resp/seq.txt -a $(cat /root/resp/seq.txt) = $(tshark -r /root/cap_tcp.pcap -Tfields -etcp.flags | paste -sd,)
+  points: 2
+  hint: "La signature du handshake complet est la suite des drapeaux tcp.flags des 3 trames, dans l'ordre et separes par des virgules. Ecris dans /root/resp/seq.txt la sortie exacte de tshark -r /root/cap_tcp.pcap -T fields -e tcp.flags | paste -sd, (forme 0x0002,...) : ne devine pas, fais le pipeline."
+- id: arp_frame_len
+  node: h1
+  cmd: test -s /root/resp/arp_len.txt -a $(cat /root/resp/arp_len.txt) = $(tshark -r /root/cap_arp.pcap -c1 -Tfields -eframe.len)
+  points: 2
+  hint: "La taille sur le cable d'une trame est le champ frame.len : ici en-tete Ethernet 14 octets + en-tete ARP 28 = 42. Ecris dans /root/resp/arp_len.txt la valeur rendue par tshark -r /root/cap_arp.pcap -c1 -T fields -e frame.len (nombre seul, sans unite)."
+- id: dns_qname
+  node: h1
+  cmd: test -s /root/resp/dns_q.txt -a $(cat /root/resp/dns_q.txt) = $(tshark -r /root/cap_dns.pcap -Y dns.flags.response==0 -Tfields -edns.qry.name)
+  points: 2
+  hint: "Le nom interroge est le champ dns.qry.name de la REQUETE uniquement, donc filtre les reponses avec -Y dns.flags.response==0. Ecris dans /root/resp/dns_q.txt la sortie de tshark -r /root/cap_dns.pcap -Y dns.flags.response==0 -T fields -e dns.qry.name (le nom de domaine seul, sans point final)."
+- id: dns_trans_id
+  node: h1
+  cmd: test -s /root/resp/dns_id.txt -a $(cat /root/resp/dns_id.txt) = $(tshark -r /root/cap_dns.pcap -Y dns.flags.response==0 -Tfields -edns.id)
+  points: 2
+  hint: "L'identifiant de transaction dns.id est rendu avec ou sans prefixe 0x selon la version de tshark : ne le devine pas. Ecris dans /root/resp/dns_id.txt la sortie exacte de tshark -r /root/cap_dns.pcap -Y dns.flags.response==0 -T fields -e dns.id, recopiee telle quelle."

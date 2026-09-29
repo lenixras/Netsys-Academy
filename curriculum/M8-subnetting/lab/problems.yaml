@@ -1,0 +1,7 @@
+count: 12
+types:
+  network: 3        # donner l'adresse réseau depuis une addr/_cidr
+  broadcast: 3      # donner le broadcast
+  hosts: 2          # nombre d'hôtes utilisables
+  prefix: 2         # plus petit préfixe pour N hôtes
+  ipv6: 2           # énième sous-réseau /64 d'un /48
